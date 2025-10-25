@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online PDF tool to rotate PDF pages and mask sensitive text/areas. Process PDF files securely in your browser.">
+    <meta name="keywords" content="PDF rotate, PDF mask, redact PDF, PDF tools, edit PDF">
+    <title>PDF Rotate & Mask Tool - Free Online PDF Editor | Lifetime Free Tools</title>
+	<link rel="icon" type="image/x-icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAuUG_XfUAa_1c97EIqIm4rfYgbKbUdfDGfhVFEpEqY1n2M0WrxRoVBqFrzmY54P4aJl1eAVCstZkBvP5VQtywsYqCfL8bgJxwYQT_llwz-okWyx7AVHiLN0jzqa98LHlgKNHuH1LFhl7BlHzhR9CfS2sllvnJLbV6nHpzEXKYOW67Aehyzo8GhvWeRWg/s320/pdf%202.webp">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7"></script>
+    <style>
+        :root {
+            --primary-color: #00A591;
+            --primary-dark: #008975;
+            --text-color: #333;
+            --light-bg: #f9f9f9;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-left: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 28px;
+            color: var(--primary-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary-color);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .hero {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .hero h2 {
+            color: var(--primary-color);
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: #666;
+        }
+        
+        /* Tool Selection */
+        .tool-selection {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        .tool-btn {
+            background-color: var(--white);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 180px;
+        }
+        
+        .tool-btn i {
+            font-size: 32px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .tool-btn span {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .tool-btn:hover, .tool-btn.active {
+            border-color: var(--primary-color);
+            background-color: rgba(0, 165, 145, 0.05);
+        }
+        
+        /* Editor Section */
+        .editor-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .upload-area {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .upload-area h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .drop-zone:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(0, 165, 145, 0.05);
+        }
+        
+        .drop-zone i {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .drop-zone p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .options-area {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .options-area h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .option-group {
+            margin-bottom: 20px;
+        }
+        
+        .option-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .option-group select, .option-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .option-group.checkbox {
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-group.checkbox input {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .mask-area {
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+            background-color: #f9f9f9;
+        }
+        
+        .mask-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .mask-item input {
+            flex: 1;
+        }
+        
+        .progress-area {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .result-area {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .result-area h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .preview-container {
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 20px;
+            min-height: 300px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .preview-container img {
+            max-width: 100%;
+            max-height: 400px;
+        }
+        
+        .preview-container p {
+            color: #666;
+            text-align: center;
+        }
+        
+        /* Blog Content Styles */
+        .blog-content {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+        
+        .blog-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        
+        .blog-content h3 {
+            color: var(--primary-color);
+            margin: 25px 0 15px;
+            font-size: 22px;
+        }
+        
+        .blog-content p {
+            margin-bottom: 15px;
+        }
+        
+        .blog-content ul, .blog-content ol {
+            margin: 15px 0 15px 30px;
+        }
+        
+        .blog-content li {
+            margin-bottom: 8px;
+        }
+        
+        .blog-content blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .faq-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .faq-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        
+        .faq-question {
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-question::after {
+            content: '+';
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+        
+        .faq-answer {
+            color: #666;
+            line-height: 1.6;
+            display: none;
+        }
+        
+        .faq-item.active .faq-question::after {
+            content: '-';
+        }
+        
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+        
+        /* Ad Spaces */
+        .ad-space {
+            background-color: #f0f0f0;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            margin: 30px 0;
+            color: #666;
+        }
+        
+        .ad-space.horizontal {
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ad-space.vertical {
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 40px 0 20px;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-column h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                padding: 15px;
+            }
+            
+            .logo {
+                margin-bottom: 15px;
+            }
+            
+            nav {
+                width: 100%;
+            }
+            
+            nav ul {
+                justify-content: space-between;
+                width: 100%;
+            }
+            
+            nav ul li {
+                margin: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                top: 15px;
+                right: 15px;
+            }
+            
+            .hero {
+                padding: 30px 20px;
+            }
+            
+            .hero h2 {
+                font-size: 26px;
+            }
+            
+            .upload-area, .options-area {
+                min-width: 100%;
+            }
+            
+            .blog-content, .faq-section {
+                padding: 30px 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero {
+                padding: 20px 15px;
+            }
+            
+            .hero h2 {
+                font-size: 22px;
+            }
+            
+            .upload-area, .options-area, .progress-area, .result-area {
+                padding: 20px;
+            }
+            
+            .blog-content, .faq-section {
+                padding: 20px 15px;
+            }
+            
+            .tool-btn {
+                width: 150px;
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon"><i class="fas fa-file-pdf"></i></span>
+                <h1>Lifetime Free Tools</h1>
+            </div>
+            <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">All Tools</a></li>
+                    <li><a href="#">PDF Tools</a></li>
+                    <li><a href="#">Image Tools</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>PDF Rotate & Mask Tool</h2>
+            <p>Rotate PDF pages and mask sensitive text or areas securely in your browser. No file uploads to servers - complete privacy guaranteed!</p>
+        </section>
+
+        <!-- Horizontal Ad Space -->
+        <div class="ad-space horizontal">
+            <!-- Google Adsense Ad Unit -->
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-1234567890123456"
+                 data-ad-slot="1234567890"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- Tool Selection -->
+        <div class="tool-selection">
+            <div class="tool-btn active" data-tool="rotate">
+                <i class="fas fa-redo-alt"></i>
+                <span>Rotate PDF</span>
+            </div>
+            <div class="tool-btn" data-tool="mask">
+                <i class="fas fa-mask"></i>
+                <span>Mask PDF</span>
+            </div>
+            <div class="tool-btn" data-tool="both">
+                <i class="fas fa-sync-alt"></i>
+                <span>Both</span>
+            </div>
+        </div>
+
+        <!-- Editor Section -->
+        <div class="editor-section">
+            <!-- Upload Area -->
+            <div class="upload-area">
+                <h3>Upload PDF File</h3>
+                <div class="drop-zone" id="dropZone">
+                    <i class="fas fa-file-pdf"></i>
+                    <p>Drag & Drop your PDF file here</p>
+                    <p>or</p>
+                    <button class="btn" id="browseBtn">Browse Files</button>
+                    <input type="file" id="fileInput" class="file-input" accept=".pdf">
+                </div>
+                <div id="fileInfo"></div>
+            </div>
+
+            <!-- Options Area -->
+            <div class="options-area">
+                <h3 id="optionsTitle">PDF Rotation Options</h3>
+                
+                <!-- Rotation Options -->
+                <div id="rotationOptions">
+                    <div class="option-group">
+                        <label for="rotationAngle">Rotation Angle</label>
+                        <select id="rotationAngle">
+                            <option value="90">90° Clockwise</option>
+                            <option value="180">180°</option>
+                            <option value="270">90° Counter-Clockwise</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="pageRange">Page Range (e.g., 1-3,5,7-9 or leave empty for all pages)</label>
+                        <input type="text" id="pageRange" placeholder="All pages">
+                    </div>
+                </div>
+                
+                <!-- Masking Options -->
+                <div id="maskingOptions" style="display: none;">
+                    <div class="option-group">
+                        <label>Mask Areas (Add coordinates for rectangles to mask)</label>
+                        <div class="mask-area" id="maskAreas">
+                            <div class="mask-item">
+                                <input type="number" placeholder="Page" min="1" class="mask-page">
+                                <input type="number" placeholder="X" min="0" class="mask-x">
+                                <input type="number" placeholder="Y" min="0" class="mask-y">
+                                <input type="number" placeholder="Width" min="1" class="mask-width">
+                                <input type="number" placeholder="Height" min="1" class="mask-height">
+                                <button class="btn remove-mask" style="padding: 5px 10px;">×</button>
+                            </div>
+                        </div>
+                        <button class="btn" id="addMaskArea" style="margin-top: 10px;">Add Another Area</button>
+                    </div>
+                    <div class="option-group">
+                        <label for="maskColor">Mask Color</label>
+                        <input type="color" id="maskColor" value="#000000">
+                    </div>
+                </div>
+                
+                <button class="btn" id="processBtn" disabled>Process PDF</button>
+            </div>
+        </div>
+
+        <!-- Progress Area -->
+        <div class="progress-area" id="progressArea">
+            <h3>Processing PDF...</h3>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <p id="progressText">Processing...</p>
+        </div>
+
+        <!-- Result Area -->
+        <div class="result-area" id="resultArea">
+            <h3>Processed PDF</h3>
+            <div class="preview-container" id="previewContainer">
+                <p>Your processed PDF will appear here</p>
+            </div>
+            <div class="download-all">
+                <button class="btn" id="downloadBtn">Download Processed PDF</button>
+            </div>
+        </div>
+
+        <!-- Vertical Ad Space -->
+        <div class="ad-space vertical">
+            <!-- Google Adsense Ad Unit -->
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-1234567890123456"
+                 data-ad-slot="0987654321"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- Blog Content Section -->
+        <div class="blog-content">
+            <h2>Complete Guide to PDF Rotation and Masking: Everything You Need to Know</h2>
+            
+            <p>In today's digital world, PDF documents have become the standard for sharing information across different platforms and devices. However, working with PDFs often requires adjustments to ensure they're properly formatted and secure. Two of the most common PDF manipulation needs are rotating pages and masking sensitive content. In this comprehensive guide, we'll explore everything you need to know about PDF rotation and masking, including why these processes are important, how they work, and best practices for achieving optimal results.</p>
+            
+            <h3>Understanding PDF Rotation</h3>
+            
+            <p>PDF rotation involves changing the orientation of pages within a document. This might seem like a simple task, but it serves several important purposes in document management and presentation.</p>
+            
+            <h4>Why Rotate PDF Pages?</h4>
+            
+            <p>There are numerous scenarios where rotating PDF pages becomes necessary:</p>
+            
+            <ul>
+                <li><strong>Correcting Scanned Documents:</strong> When scanning physical documents, pages sometimes get scanned sideways or upside down. Rotation corrects these orientation errors.</li>
+                <li><strong>Improving Readability:</strong> Some content, such as wide tables or landscape-oriented images, may be easier to read when pages are rotated to better fit screen dimensions.</li>
+                <li><strong>Standardizing Document Format:</strong> Creating consistency across a multi-page document where some pages may have different orientations.</li>
+                <li><strong>Presentation Preparation:</strong> Adjusting page orientation for specific presentation or printing requirements.</li>
+                <li><strong>Mobile Optimization:</strong> Ensuring PDFs display correctly on mobile devices with varying screen orientations.</li>
+            </ul>
+            
+            <h4>Technical Aspects of PDF Rotation</h4>
+            
+            <p>From a technical perspective, PDF rotation doesn't actually modify the content of the page. Instead, it changes the page's rotation property in the PDF structure. This means:</p>
+            
+            <ul>
+                <li>The original content remains unchanged - only the display orientation is modified</li>
+                <li>Rotation can be applied to individual pages or the entire document</li>
+                <li>Common rotation angles are 90°, 180°, and 270°</li>
+                <li>Rotation is a lossless operation that doesn't reduce quality</li>
+            </ul>
+            
+            <h3>Understanding PDF Masking (Redaction)</h3>
+            
+            <p>PDF masking, also known as redaction, is the process of permanently covering or removing sensitive information from a document. Unlike simply covering content with shapes in a PDF viewer, proper masking ensures the underlying information cannot be recovered.</p>
+            
+            <h4>Why Mask PDF Content?</h4>
+            
+            <p>Content masking is crucial for protecting sensitive information in various contexts:</p>
+            
+            <ul>
+                <li><strong>Privacy Protection:</strong> Hiding personal identifiable information (PII) such as Social Security numbers, addresses, phone numbers, and email addresses.</li>
+                <li><strong>Legal Compliance:</strong> Meeting regulatory requirements for data protection before sharing documents.</li>
+                <li><strong>Confidentiality Maintenance:</strong> Protecting trade secrets, financial information, or proprietary data.</li>
+                <li><strong>Document Preparation for Public Release:</strong> Preparing documents for public distribution while protecting sensitive content.</li>
+                <li><strong>Legal Proceedings:</strong> Redacting privileged information from legal documents before discovery.</li>
+            </ul>
+            
+            <h4>Technical Implementation of PDF Masking</h4>
+            
+            <p>Proper PDF masking involves more than just covering content with black boxes. Effective implementation requires:</p>
+            
+            <ul>
+                <li>Permanently removing the underlying content, not just covering it</li>
+                <li>Ensuring masked areas cannot be revealed through PDF manipulation</li>
+                <li>Maintaining document structure and functionality outside masked areas</li>
+                <li>Using appropriate colors and coverage to ensure complete obscuration</li>
+            </ul>
+            
+            <blockquote>
+                <p>Important: Simple "covering" of text with colored shapes in some PDF editors may not constitute true redaction, as the underlying text may still be extractable. True redaction permanently removes the content.</p>
+            </blockquote>
+            
+            <h3>How Our PDF Rotation and Masking Tool Works</h3>
+            
+            <p>Our online tool uses advanced client-side processing to handle PDF rotation and masking directly in your browser. This approach offers significant advantages over traditional server-based processing:</p>
+            
+            <h4>Client-Side Processing Benefits</h4>
+            
+            <ul>
+                <li><strong>Enhanced Privacy:</strong> Your files never leave your computer, ensuring complete confidentiality</li>
+                <li><strong>No File Size Limitations:</strong> Process documents of any size (limited only by your device's capabilities)</li>
+                <li><strong>Instant Processing:</strong> No waiting for server queues or processing delays</li>
+                <li><strong>No Registration Required:</strong> Use the tool immediately without creating accounts or providing personal information</li>
+                <li><strong>Offline Capability:</strong> Once loaded, the tool can function without an internet connection</li>
+            </ul>
+            
+            <h4>Technical Implementation</h4>
+            
+            <p>Our tool leverages the PDF-Lib JavaScript library, which provides robust PDF manipulation capabilities entirely in the browser. This library:</p>
+            
+            <ul>
+                <li>Parses PDF structure without external dependencies</li>
+                <li>Modifies page properties for rotation</li>
+                <li>Adds permanent masking elements to obscure content</li>
+                <li>Maintains PDF compatibility across different viewers</li>
+                <li>Preserves document quality and structure</li>
+            </ul>
+            
+            <h3>Best Practices for PDF Rotation</h3>
+            
+            <p>To achieve optimal results when rotating PDF pages, consider these best practices:</p>
+            
+            <h4>Pre-Rotation Considerations</h4>
+            
+            <ul>
+                <li><strong>Check Content Compatibility:</strong> Ensure text, images, and other elements will remain readable after rotation</li>
+                <li><strong>Verify Page Dimensions:</strong> Confirm that rotated pages will fit within your intended display or print area</li>
+                <li><strong>Review Document Structure:</strong> Check if rotation will affect navigation elements, bookmarks, or links</li>
+                <li><strong>Test with Sample Pages:</strong> Rotate a few pages first to verify the results before processing the entire document</li>
+            </ul>
+            
+            <h4>Rotation Execution</h4>
+            
+            <ul>
+                <li><strong>Use Standard Angles:</strong> Stick to 90°, 180°, or 270° rotations for maximum compatibility</li>
+                <li><strong>Apply Selective Rotation:</strong> Rotate only the pages that need adjustment rather than the entire document</li>
+                <li><strong>Maintain Backups:</strong> Keep original files until you're satisfied with the rotated version</li>
+                <li><strong>Check Output Quality:</strong> Verify that rotated pages maintain clarity and readability</li>
+            </ul>
+            
+            <h3>Best Practices for PDF Masking</h3>
+            
+            <p>Effective PDF masking requires careful planning and execution. Follow these guidelines for optimal results:</p>
+            
+            <h4>Pre-Masking Preparation</h4>
+            
+            <ul>
+                <li><strong>Identify Sensitive Content:</strong> Thoroughly review the document to locate all sensitive information</li>
+                <li><strong>Plan Mask Placement:</strong> Determine the exact areas that need masking and appropriate dimensions</li>
+                <li><strong>Consider Context:</strong> Ensure masking doesn't remove important contextual information</li>
+                <li><strong>Create a Checklist:</strong> Develop a systematic approach to ensure no sensitive content is overlooked</li>
+            </ul>
+            
+            <h4>Masking Execution</h4>
+            
+            <ul>
+                <li><strong>Use Opaque Colors:</strong> Select solid, opaque colors that completely obscure underlying content</li>
+                <li><strong>Ensure Complete Coverage:</strong> Make masked areas slightly larger than the content to prevent partial visibility</li>
+                <li><strong>Maintain Consistency:</strong> Use consistent masking styles throughout the document</li>
+                <li><strong>Verify Effectiveness:</strong> Thoroughly check the final document to ensure all sensitive content is properly masked</li>
+            </ul>
+            
+            <h3>Common Use Cases and Applications</h3>
+            
+            <p>PDF rotation and masking serve important functions across various industries and scenarios:</p>
+            
+            <h4>Business and Corporate Applications</h4>
+            
+            <ul>
+                <li><strong>Financial Reports:</strong> Rotate pages for better presentation and mask sensitive financial data before sharing</li>
+                <li><strong>Contract Management:</strong> Prepare contracts for different stakeholders by masking proprietary terms</li>
+                <li><strong>HR Documents:</strong> Protect employee privacy when sharing organizational charts or performance reviews</li>
+                <li><strong>Board Presentations:</strong> Adjust page orientations for optimal projection and mask confidential strategic information</li>
+            </ul>
+            
+            <h4>Legal and Government Applications</h4>
+            
+            <ul>
+                <li><strong>Court Filings:</strong> Redact sensitive information from legal documents before public filing</li>
+                <li><strong>Freedom of Information Requests:</strong> Prepare government documents for public release while protecting classified information</li>
+                <li><strong>Discovery Documents:</strong> Mask privileged attorney-client communications in legal proceedings</li>
+                <li><strong>Public Records:</strong> Ensure citizen privacy when making records available to the public</li>
+            </ul>
+            
+            <h4>Healthcare Applications</h4>
+            
+            <ul>
+                <li><strong>Medical Records:</strong> Protect patient privacy when sharing records for research or second opinions</li>
+                <li><strong>Insurance Claims:</strong> Mask sensitive health information before processing claims</li>
+                <li><strong>Research Documents:</strong> Prepare medical research for publication while protecting patient identities</li>
+            </ul>
+            
+            <h4>Education and Research Applications</h4>
+            
+            <ul>
+                <li><strong>Thesis Preparation:</strong> Format research documents properly and mask confidential data</li>
+                <li><strong>Academic Publishing:</strong> Prepare manuscripts for publication while protecting unpublished research</li>
+                <li><strong>Student Records:</strong> Protect student privacy when sharing academic information</li>
+            </ul>
+            
+            <h3>Security Considerations and Best Practices</h3>
+            
+            <p>When working with sensitive documents, security should always be a primary concern. Follow these security best practices:</p>
+            
+            <h4>Document Security</h4>
+            
+            <ul>
+                <li><strong>Verify Masking Effectiveness:</strong> Ensure masked content cannot be recovered through PDF manipulation</li>
+                <li><strong>Use Secure Storage:</strong> Store sensitive documents in encrypted locations with appropriate access controls</li>
+                <li><strong>Secure File Transfer:</strong> Use encrypted channels when sharing redacted documents</li>
+                <li><strong>Document Tracking:</strong> Maintain records of who has accessed sensitive documents</li>
+            </ul>
+            
+            <h4>Processing Environment Security</h4>
+            
+            <ul>
+                <li><strong>Secure Networks:</strong> Process sensitive documents only on trusted, secure networks</li>
+                <li><strong>Updated Software:</strong> Ensure your browser and operating system are up to date with security patches</li>
+                <li><strong>Secure Deletion:</strong> Permanently delete original files containing sensitive information after successful masking</li>
+                <li><strong>Access Controls:</strong> Implement appropriate physical and digital access controls for sensitive documents</li>
+            </ul>
+            
+            <h3>Future Trends in PDF Manipulation</h3>
+            
+            <p>The field of PDF manipulation continues to evolve with emerging technologies and user needs:</p>
+            
+            <ul>
+                <li><strong>AI-Powered Redaction:</strong> Machine learning algorithms that can automatically identify and redact sensitive information</li>
+                <li><strong>Blockchain Verification:</strong> Using blockchain technology to verify document integrity and redaction completeness</li>
+                <li><strong>Enhanced Mobile Capabilities:</strong> Improved PDF manipulation tools optimized for mobile devices</li>
+                <li><strong>Collaborative Editing:</strong> Real-time collaborative PDF editing with version control and access management</li>
+                <li><strong>Advanced Security Features:</strong> Enhanced encryption and access control mechanisms for sensitive documents</li>
+            </ul>
+            
+            <h3>Conclusion</h3>
+            
+            <p>PDF rotation and masking are essential tools in today's digital document workflow. Whether you're correcting page orientations, preparing documents for different audiences, or protecting sensitive information, understanding these processes is crucial for effective document management.</p>
+            
+            <p>Our online PDF rotation and masking tool provides a secure, efficient solution that respects your privacy by processing documents entirely in your browser. With its intuitive interface and robust functionality, you can confidently handle your PDF manipulation needs without compromising security or quality.</p>
+            
+            <p>By following the best practices outlined in this guide and leveraging the capabilities of our tool, you can ensure your PDF documents are properly formatted, securely redacted, and ready for their intended use. As PDF technology continues to evolve, staying informed about these essential manipulation techniques will remain important for professionals across all industries.</p>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">Is it safe to process sensitive PDFs with this tool?</div>
+                <div class="faq-answer">
+                    <p>Yes, absolutely. Our tool processes PDF files entirely in your browser using JavaScript. Your files never leave your computer or get uploaded to any server. This ensures complete privacy and security for your sensitive documents. The processing happens locally on your device, and once you close the browser tab, all temporary data is cleared.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What is the maximum file size I can process?</div>
+                <div class="faq-answer">
+                    <p>There's no specific file size limit imposed by our tool. The actual limit depends on your device's memory and processing power. Most modern devices can comfortably handle PDFs up to 100MB, but very large files may take longer to process. If you encounter performance issues with large files, try closing other applications to free up system resources.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I rotate specific pages instead of the entire document?</div>
+                <div class="faq-answer">
+                    <p>Yes, you can specify page ranges for rotation. Use the page range field to indicate which pages should be rotated using formats like "1-3,5,7-9" to rotate pages 1,2,3,5,7,8,9. Leave the field empty to rotate all pages. This selective rotation is particularly useful when only certain pages in a document have orientation issues.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">How do I determine the coordinates for masking areas?</div>
+                <div class="faq-answer">
+                    <p>Determining precise coordinates can be challenging without a visual interface. For best results, you might need to use a PDF viewer that shows coordinates or estimate based on the document layout. Some advanced PDF editors display coordinate information when you select content. As an alternative, you can use the trial-and-error method by starting with estimated coordinates and adjusting based on the results. We're working on adding a visual masking interface in a future update to simplify this process.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I undo changes if I make a mistake?</div>
+                <div class="faq-answer">
+                    <p>Since the processing happens in real-time and the original file remains unchanged, you can simply reprocess the original file if you're not satisfied with the results. We recommend keeping a backup of your original PDF until you're happy with the processed version. The tool doesn't have an undo function during the same session, but you can always start over with your original file.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What PDF versions are supported?</div>
+                <div class="faq-answer">
+                    <p>Our tool supports most PDF versions, including PDF 1.0 through PDF 2.0. However, some advanced features in newer PDF versions might not be fully supported. If you encounter issues with a specific PDF, try saving it as a standard PDF 1.4 or 1.7 version before processing. Password-protected PDFs cannot be processed with our current tool.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Are there any watermarks on the processed PDF?</div>
+                <div class="faq-answer">
+                    <p>No, our tool does not add any watermarks to your processed PDFs. The files you download are completely clean without any branding or limitations. We believe in providing truly free tools without compromising the quality or usability of your documents.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I process multiple PDFs at once?</div>
+                <div class="faq-answer">
+                    <p>Currently, our tool processes one PDF file at a time. If you need to process multiple documents, you'll need to handle them individually. For batch processing of similar operations, you might consider using desktop PDF software that supports batch operations. However, for individual documents or occasional use, our tool provides a convenient and secure solution.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What happens if the processing is interrupted?</div>
+                <div class="faq-answer">
+                    <p>If processing is interrupted due to browser issues, internet connectivity problems, or other factors, your original file remains unchanged. You'll need to restart the process with your original PDF file. We recommend ensuring stable browser operation during processing, especially for larger files that may take more time to complete.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Is there a limit to how many areas I can mask in a document?</div>
+                <div class="faq-answer">
+                    <p>There's no hard limit to the number of masking areas you can add to a document. However, extremely complex documents with hundreds of masking areas may take longer to process and could result in larger file sizes. For optimal performance, we recommend being judicious with the number of masking areas and combining adjacent areas when possible.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I use this tool on mobile devices?</div>
+                <div class="faq-answer">
+                    <p>Yes, our tool is fully responsive and works on mobile devices, though the experience may vary depending on your device's capabilities and screen size. Processing larger files on mobile devices may be slower than on desktop computers due to hardware limitations. We recommend using the tool on a computer for the best experience, especially when working with large or complex documents.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Does the tool work with scanned PDFs (image-based PDFs)?</div>
+                <div class="faq-answer">
+                    <p>Yes, the rotation function works with all types of PDFs, including scanned/image-based PDFs. However, masking on scanned PDFs will cover the areas you specify but won't remove underlying text data if the PDF contains OCR (Optical Character Recognition) text layers. For maximum security with scanned documents, ensure you're masking all relevant areas thoroughly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>PDF Tools</h3>
+                    <ul>
+                        <li><a href="#">PDF to Word</a></li>
+                        <li><a href="#">PDF to Excel</a></li>
+                        <li><a href="#">PDF to PowerPoint</a></li>
+                        <li><a href="#">PDF to JPG</a></li>
+                        <li><a href="#">Merge PDF</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Image Tools</h3>
+                    <ul>
+                        <li><a href="#">Image Converter</a></li>
+                        <li><a href="#">Image Resizer</a></li>
+                        <li><a href="#">Image Compressor</a></li>
+                        <li><a href="#">Watermark Remover</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Other Tools</h3>
+                    <ul>
+                        <li><a href="#">Video Converter</a></li>
+                        <li><a href="#">Audio Converter</a></li>
+                        <li><a href="#">Document Converter</a></li>
+                        <li><a href="#">Unit Converter</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Lifetime Free Tools. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const browseBtn = document.getElementById('browseBtn');
+        const fileInfo = document.getElementById('fileInfo');
+        const processBtn = document.getElementById('processBtn');
+        const progressArea = document.getElementById('progressArea');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const resultArea = document.getElementById('resultArea');
+        const previewContainer = document.getElementById('previewContainer');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const toolButtons = document.querySelectorAll('.tool-btn');
+        const optionsTitle = document.getElementById('optionsTitle');
+        const rotationOptions = document.getElementById('rotationOptions');
+        const maskingOptions = document.getElementById('maskingOptions');
+        const maskAreas = document.getElementById('maskAreas');
+        const addMaskArea = document.getElementById('addMaskArea');
+        
+        // Variables
+        let selectedFile = null;
+        let processedPdfBytes = null;
+        let currentTool = 'rotate';
+        
+        // Event Listeners
+        browseBtn.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelection(e.target.files[0]);
+            }
+        });
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#00A591';
+            dropZone.style.backgroundColor = 'rgba(0, 165, 145, 0.05)';
+        });
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = '#e0e0e0';
+            dropZone.style.backgroundColor = '';
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#e0e0e0';
+            dropZone.style.backgroundColor = '';
+            
+            if (e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                if (file.type === 'application/pdf') {
+                    handleFileSelection(file);
+                } else {
+                    alert('Please upload a PDF file.');
+                }
+            }
+        });
+        
+        processBtn.addEventListener('click', processPDF);
+        
+        downloadBtn.addEventListener('click', downloadPDF);
+        
+        // Tool selection
+        toolButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                toolButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTool = btn.getAttribute('data-tool');
+                updateOptionsForTool();
+            });
+        });
+        
+        // Add mask area
+        addMaskArea.addEventListener('click', () => {
+            const newMaskItem = document.createElement('div');
+            newMaskItem.className = 'mask-item';
+            newMaskItem.innerHTML = `
+                <input type="number" placeholder="Page" min="1" class="mask-page">
+                <input type="number" placeholder="X" min="0" class="mask-x">
+                <input type="number" placeholder="Y" min="0" class="mask-y">
+                <input type="number" placeholder="Width" min="1" class="mask-width">
+                <input type="number" placeholder="Height" min="1" class="mask-height">
+                <button class="btn remove-mask" style="padding: 5px 10px;">×</button>
+            `;
+            maskAreas.appendChild(newMaskItem);
+            
+            // Add event listener to remove button
+            newMaskItem.querySelector('.remove-mask').addEventListener('click', () => {
+                newMaskItem.remove();
+            });
+        });
+        
+        // Remove mask area (for initial item)
+        document.querySelector('.remove-mask').addEventListener('click', function() {
+            // Don't remove if it's the only item
+            if (maskAreas.children.length > 1) {
+                this.parentElement.remove();
+            }
+        });
+        
+        // FAQ functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+        
+        // Functions
+        function handleFileSelection(file) {
+            if (file.type !== 'application/pdf') {
+                alert('Please upload a PDF file.');
+                return;
+            }
+            
+            selectedFile = file;
+            fileInfo.innerHTML = `
+                <p><strong>Selected File:</strong> ${file.name}</p>
+                <p><strong>Size:</strong> ${formatFileSize(file.size)}</p>
+            `;
+            processBtn.disabled = false;
+            
+            // Show preview
+            previewContainer.innerHTML = `
+                <i class="fas fa-file-pdf" style="font-size: 64px; color: #00A591; margin-bottom: 15px;"></i>
+                <p><strong>${file.name}</strong></p>
+                <p>Size: ${formatFileSize(file.size)}</p>
+                <p>Ready for processing</p>
+            `;
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function updateOptionsForTool() {
+            switch(currentTool) {
+                case 'rotate':
+                    optionsTitle.textContent = 'PDF Rotation Options';
+                    rotationOptions.style.display = 'block';
+                    maskingOptions.style.display = 'none';
+                    break;
+                case 'mask':
+                    optionsTitle.textContent = 'PDF Masking Options';
+                    rotationOptions.style.display = 'none';
+                    maskingOptions.style.display = 'block';
+                    break;
+                case 'both':
+                    optionsTitle.textContent = 'PDF Rotation & Masking Options';
+                    rotationOptions.style.display = 'block';
+                    maskingOptions.style.display = 'block';
+                    break;
+            }
+        }
+        
+        async function processPDF() {
+            if (!selectedFile) return;
+            
+            // Show progress area
+            progressArea.style.display = 'block';
+            resultArea.style.display = 'none';
+            
+            try {
+                // Read the PDF file
+                const arrayBuffer = await selectedFile.arrayBuffer();
+                const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+                
+                // Update progress
+                progressBar.style.width = '30%';
+                progressText.textContent = 'Processing PDF...';
+                
+                // Get pages
+                const pages = pdfDoc.getPages();
+                const totalPages = pages.length;
+                
+                // Parse page range for rotation
+                let pagesToRotate = [];
+                const pageRangeInput = document.getElementById('pageRange').value.trim();
+                
+                if (pageRangeInput) {
+                    // Parse page range (e.g., "1-3,5,7-9")
+                    const ranges = pageRangeInput.split(',');
+                    for (const range of ranges) {
+                        if (range.includes('-')) {
+                            const [start, end] = range.split('-').map(num => parseInt(num.trim()));
+                            for (let i = start; i <= end; i++) {
+                                if (i >= 1 && i <= totalPages) {
+                                    pagesToRotate.push(i - 1); // Convert to 0-based index
+                                }
+                            }
+                        } else {
+                            const pageNum = parseInt(range.trim());
+                            if (pageNum >= 1 && pageNum <= totalPages) {
+                                pagesToRotate.push(pageNum - 1); // Convert to 0-based index
+                            }
+                        }
+                    }
+                } else {
+                    // If no range specified, rotate all pages
+                    pagesToRotate = Array.from({length: totalPages}, (_, i) => i);
+                }
+                
+                // Apply rotation if needed
+                if (currentTool === 'rotate' || currentTool === 'both') {
+                    const rotationAngle = parseInt(document.getElementById('rotationAngle').value);
+                    
+                    for (const pageIndex of pagesToRotate) {
+                        const page = pages[pageIndex];
+                        page.setRotation(PDFLib.degrees(rotationAngle));
+                    }
+                    
+                    progressBar.style.width = '60%';
+                    progressText.textContent = 'Rotating pages...';
+                }
+                
+                // Apply masking if needed
+                if (currentTool === 'mask' || currentTool === 'both') {
+                    const maskColor = document.getElementById('maskColor').value;
+                    const rgb = hexToRgb(maskColor);
+                    
+                    // Get all mask areas
+                    const maskItems = maskAreas.querySelectorAll('.mask-item');
+                    
+                    for (const item of maskItems) {
+                        const pageInput = item.querySelector('.mask-page');
+                        const xInput = item.querySelector('.mask-x');
+                        const yInput = item.querySelector('.mask-y');
+                        const widthInput = item.querySelector('.mask-width');
+                        const heightInput = item.querySelector('.mask-height');
+                        
+                        // Check if all fields are filled
+                        if (pageInput.value && xInput.value && yInput.value && widthInput.value && heightInput.value) {
+                            const pageNum = parseInt(pageInput.value) - 1; // Convert to 0-based index
+                            const x = parseInt(xInput.value);
+                            const y = parseInt(yInput.value);
+                            const width = parseInt(widthInput.value);
+                            const height = parseInt(heightInput.value);
+                            
+                            if (pageNum >= 0 && pageNum < totalPages) {
+                                const page = pages[pageNum];
+                                page.drawRectangle({
+                                    x: x,
+                                    y: y,
+                                    width: width,
+                                    height: height,
+                                    color: PDFLib.rgb(rgb.r / 255, rgb.g / 255, rgb.b / 255),
+                                    opacity: 1,
+                                });
+                            }
+                        }
+                    }
+                    
+                    progressBar.style.width = '90%';
+                    progressText.textContent = 'Applying masks...';
+                }
+                
+                // Save the modified PDF
+                processedPdfBytes = await pdfDoc.save();
+                
+                // Finalize
+                progressBar.style.width = '100%';
+                progressText.textContent = 'Finalizing...';
+                
+                // Hide progress and show results
+                setTimeout(() => {
+                    progressArea.style.display = 'none';
+                    resultArea.style.display = 'block';
+                    
+                    previewContainer.innerHTML = `
+                        <i class="fas fa-check-circle" style="font-size: 64px; color: #00A591; margin-bottom: 15px;"></i>
+                        <p><strong>PDF Successfully Processed!</strong></p>
+                        <p>Your PDF has been ${getActionDescription()} successfully.</p>
+                        <p>Click the download button below to save your file.</p>
+                    `;
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error processing PDF:', error);
+                alert('Error processing PDF. Please try again with a different file.');
+                progressArea.style.display = 'none';
+            }
+        }
+        
+        function hexToRgb(hex) {
+            // Remove the # if present
+            hex = hex.replace('#', '');
+            
+            // Parse the hex values
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            
+            return { r, g, b };
+        }
+        
+        function getActionDescription() {
+            switch(currentTool) {
+                case 'rotate': return 'rotated';
+                case 'mask': return 'masked';
+                case 'both': return 'rotated and masked';
+                default: return 'processed';
+            }
+        }
+        
+        function downloadPDF() {
+            if (!processedPdfBytes) return;
+            
+            const fileName = `processed_${selectedFile.name}`;
+            download(processedPdfBytes, fileName, "application/pdf");
+        }
+        
+        // Initialize
+        updateOptionsForTool();
+    </script>
+</body>
+</html>

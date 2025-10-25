@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online Scan to PDF tool. Convert images from your camera or scanner to PDF documents. Works entirely in your browser for maximum privacy.">
+    <meta name="keywords" content="scan to PDF, camera to PDF, document scanner, PDF creator, PDF tools">
+    <title>Scan to PDF Tool - Convert Camera Images to PDF | Lifetime Free Tools</title>
+	<link rel="icon" type="image/x-icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAuUG_XfUAa_1c97EIqIm4rfYgbKbUdfDGfhVFEpEqY1n2M0WrxRoVBqFrzmY54P4aJl1eAVCstZkBvP5VQtywsYqCfL8bgJxwYQT_llwz-okWyx7AVHiLN0jzqa98LHlgKNHuH1LFhl7BlHzhR9CfS2sllvnJLbV6nHpzEXKYOW67Aehyzo8GhvWeRWg/s320/pdf%202.webp">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7"></script>
+    <style>
+        :root {
+            --primary-color: #00A591;
+            --primary-dark: #008975;
+            --text-color: #333;
+            --light-bg: #f9f9f9;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-left: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 28px;
+            color: var(--primary-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary-color);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .hero {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .hero h2 {
+            color: var(--primary-color);
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: #666;
+        }
+        
+        /* Editor Section */
+        .editor-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .scanner-area {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .scanner-area h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .camera-container {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #videoElement {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .camera-placeholder {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .camera-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(0, 165, 145, 0.1);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .options-area {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .options-area h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .option-group {
+            margin-bottom: 20px;
+        }
+        
+        .option-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .option-group select, .option-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .page-size-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .size-option {
+            flex: 1;
+            min-width: 80px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .size-option:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(0, 165, 145, 0.05);
+        }
+        
+        .size-option.active {
+            border-color: var(--primary-color);
+            background-color: rgba(0, 165, 145, 0.1);
+        }
+        
+        .captured-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+        
+        .captured-image {
+            position: relative;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .captured-image img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .image-actions {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(0,0,0,0.5);
+            border-radius: 0 0 0 5px;
+            padding: 2px;
+        }
+        
+        .image-actions button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 2px 5px;
+        }
+        
+        .file-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .file-stat {
+            text-align: center;
+        }
+        
+        .file-stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .file-stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .progress-area {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .result-area {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .result-area h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .pdf-preview {
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 20px;
+            min-height: 200px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background-color: #f8f8f8;
+        }
+        
+        .pdf-preview p {
+            color: #666;
+            text-align: center;
+        }
+        
+        /* Blog Content Styles */
+        .blog-content {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+        
+        .blog-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        
+        .blog-content h3 {
+            color: var(--primary-color);
+            margin: 25px 0 15px;
+            font-size: 22px;
+        }
+        
+        .blog-content p {
+            margin-bottom: 15px;
+        }
+        
+        .blog-content ul, .blog-content ol {
+            margin: 15px 0 15px 30px;
+        }
+        
+        .blog-content li {
+            margin-bottom: 8px;
+        }
+        
+        .blog-content blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .faq-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .faq-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        
+        .faq-question {
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-question::after {
+            content: '+';
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+        
+        .faq-answer {
+            color: #666;
+            line-height: 1.6;
+            display: none;
+        }
+        
+        .faq-item.active .faq-question::after {
+            content: '-';
+        }
+        
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+        
+        /* Ad Spaces */
+        .ad-space {
+            background-color: #f0f0f0;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            margin: 30px 0;
+            color: #666;
+        }
+        
+        .ad-space.horizontal {
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ad-space.vertical {
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 40px 0 20px;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-column h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                padding: 15px;
+            }
+            
+            .logo {
+                margin-bottom: 15px;
+            }
+            
+            nav {
+                width: 100%;
+            }
+            
+            nav ul {
+                justify-content: space-between;
+                width: 100%;
+            }
+            
+            nav ul li {
+                margin: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                top: 15px;
+                right: 15px;
+            }
+            
+            .hero {
+                padding: 30px 20px;
+            }
+            
+            .hero h2 {
+                font-size: 26px;
+            }
+            
+            .scanner-area, .options-area {
+                min-width: 100%;
+            }
+            
+            .camera-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .camera-controls .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .blog-content, .faq-section {
+                padding: 30px 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero {
+                padding: 20px 15px;
+            }
+            
+            .hero h2 {
+                font-size: 22px;
+            }
+            
+            .scanner-area, .options-area, .progress-area, .result-area {
+                padding: 20px;
+            }
+            
+            .blog-content, .faq-section {
+                padding: 20px 15px;
+            }
+            
+            .page-size-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon"><i class="fas fa-file-pdf"></i></span>
+                <h1>Lifetime Free Tools</h1>
+            </div>
+            <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">All Tools</a></li>
+                    <li><a href="#">PDF Tools</a></li>
+                    <li><a href="#">Image Tools</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>Scan to PDF Tool</h2>
+            <p>Convert images from your camera or scanner directly to PDF documents. Capture documents, receipts, whiteboards, and more with our browser-based scanning tool.</p>
+        </section>
+
+        <!-- Horizontal Ad Space -->
+        <div class="ad-space horizontal">
+            <!-- Google Adsense Ad Unit -->
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-1234567890123456"
+                 data-ad-slot="1234567890"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- Editor Section -->
+        <div class="editor-section">
+            <!-- Scanner Area -->
+            <div class="scanner-area">
+                <h3>Capture Images</h3>
+                
+                <div class="camera-container" id="cameraContainer">
+                    <div class="camera-placeholder">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <p id="cameraStatus">Click "Start Camera" to begin</p>
+                    <video id="videoElement" autoplay playsinline></video>
+                    <canvas id="canvasElement" style="display: none;"></canvas>
+                    
+                    <div class="camera-controls">
+                        <button class="btn" id="startCameraBtn">Start Camera</button>
+                        <button class="btn" id="captureBtn" disabled>Capture Image</button>
+                        <button class="btn btn-outline" id="stopCameraBtn" disabled>Stop Camera</button>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <label>Upload Existing Images</label>
+                    <div style="text-align: center;">
+                        <button class="btn btn-outline" id="uploadImagesBtn">
+                            <i class="fas fa-upload"></i> Upload Images
+                        </button>
+                        <input type="file" id="fileInput" class="file-input" accept="image/*" multiple>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <label>Captured Images</label>
+                    <div class="captured-images" id="capturedImages">
+                        <p style="grid-column: 1 / -1; text-align: center; color: #666; padding: 20px;">
+                            No images captured yet
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="file-info" id="fileInfoDetails" style="display: none;">
+                    <div class="file-stat">
+                        <div class="file-stat-value" id="imageCountValue">0</div>
+                        <div class="file-stat-label">Images</div>
+                    </div>
+                    <div class="file-stat">
+                        <div class="file-stat-value" id="estimatedPages">0</div>
+                        <div class="file-stat-label">Pages</div>
+                    </div>
+                    <div class="file-stat">
+                        <div class="file-stat-value" id="fileSizeValue">0 KB</div>
+                        <div class="file-stat-label">Total Size</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Options Area -->
+            <div class="options-area">
+                <h3>PDF Settings</h3>
+                
+                <div class="option-group">
+                    <label>Page Size</label>
+                    <div class="page-size-options">
+                        <div class="size-option active" data-size="A4">
+                            A4
+                        </div>
+                        <div class="size-option" data-size="Letter">
+                            Letter
+                        </div>
+                        <div class="size-option" data-size="Legal">
+                            Legal
+                        </div>
+                        <div class="size-option" data-size="A3">
+                            A3
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <label for="orientation">Page Orientation</label>
+                    <select id="orientation">
+                        <option value="portrait">Portrait</option>
+                        <option value="landscape">Landscape</option>
+                        <option value="auto">Auto (Based on images)</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label for="quality">Image Quality</label>
+                    <select id="quality">
+                        <option value="high">High (Larger file size)</option>
+                        <option value="medium" selected>Medium (Balanced)</option>
+                        <option value="low">Low (Smaller file size)</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label for="margin">Page Margin</label>
+                    <select id="margin">
+                        <option value="none">No Margin</option>
+                        <option value="small" selected>Small Margin</option>
+                        <option value="medium">Medium Margin</option>
+                        <option value="large">Large Margin</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label>PDF Preview</label>
+                    <div class="pdf-preview">
+                        <i class="fas fa-file-pdf" style="font-size: 48px; color: #00A591; margin-bottom: 15px;"></i>
+                        <p>PDF preview will appear here after generation</p>
+                        <p id="estimatedInfo" style="font-size: 14px; margin-top: 10px;"></p>
+                    </div>
+                </div>
+                
+                <button class="btn" id="generatePdfBtn" disabled>Generate PDF</button>
+            </div>
+        </div>
+
+        <!-- Progress Area -->
+        <div class="progress-area" id="progressArea">
+            <h3>Creating PDF...</h3>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <p id="progressText">Processing...</p>
+        </div>
+
+        <!-- Result Area -->
+        <div class="result-area" id="resultArea">
+            <h3>PDF Created Successfully</h3>
+            
+            <div class="pdf-preview">
+                <i class="fas fa-check-circle" style="font-size: 48px; color: #00A591; margin-bottom: 15px;"></i>
+                <p><strong>Your PDF document is ready!</strong></p>
+                <p>Download your PDF file below.</p>
+                <p id="pdfInfo" style="font-size: 14px; margin-top: 10px;"></p>
+            </div>
+            
+            <div class="download-all">
+                <button class="btn" id="downloadBtn">Download PDF</button>
+            </div>
+        </div>
+
+        <!-- Vertical Ad Space -->
+        <div class="ad-space vertical">
+            <!-- Google Adsense Ad Unit -->
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-1234567890123456"
+                 data-ad-slot="0987654321"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- Blog Content Section -->
+        <div class="blog-content">
+            <h2>Complete Guide to Scanning Documents to PDF: Digitize Your Paperwork</h2>
+            
+            <p>Document scanning has become an essential skill in our increasingly digital world. Converting physical documents to PDF format allows for easy storage, sharing, and organization. In this comprehensive guide, we'll explore everything you need to know about scanning documents to PDF, from basic techniques to advanced optimization strategies.</p>
+            
+            <h3>Understanding Document Scanning</h3>
+            
+            <p>Document scanning involves converting physical documents into digital format, typically PDF. This process preserves the content and layout of the original document while making it accessible on digital devices.</p>
+            
+            <h4>How Document Scanning Works</h4>
+            
+            <p>Modern scanning involves several key steps:</p>
+            
+            <ul>
+                <li><strong>Image Capture:</strong> Using a camera or scanner to create a digital image of the document</li>
+                <li><strong>Image Processing:</strong> Enhancing the captured image for better readability</li>
+                <li><strong>PDF Creation:</strong> Converting one or multiple images into a PDF document</li>
+                <li><strong>Optimization:</strong> Compressing and organizing the PDF for efficient storage and sharing</li>
+            </ul>
+            
+            <blockquote>
+                <p>Important: Effective scanning balances image quality with file size. Higher quality images produce better results but create larger files.</p>
+            </blockquote>
+            
+            <h3>Why Scan Documents to PDF?</h3>
+            
+            <p>There are numerous compelling reasons to convert physical documents to PDF format:</p>
+            
+            <h4>Practical Benefits</h4>
+            
+            <ul>
+                <li><strong>Space Saving:</strong> Reduce physical storage needs by digitizing paperwork</li>
+                <li><strong>Easy Sharing:</strong> Send documents instantly via email or messaging apps</li>
+                <li><strong>Searchability:</strong> Make document content searchable with OCR technology</li>
+                <li><strong>Preservation:</strong> Protect important documents from physical damage or loss</li>
+            </ul>
+            
+            <h4>Professional Applications</h4>
+            
+            <ul>
+                <li><strong>Business Records:</strong> Digitize invoices, contracts, and business correspondence</li>
+                <li><strong>Academic Materials:</strong> Create digital copies of notes, research, and assignments</li>
+                <li><strong>Legal Documents:</strong> Preserve important legal paperwork in secure digital format</li>
+                <li><strong>Medical Records:</strong> Maintain digital health records for easy access and sharing</li>
+            </ul>
+            
+            <h3>Scanning Methods and Techniques</h3>
+            
+            <p>Our Scan to PDF tool supports multiple capture methods to suit different needs:</p>
+            
+            <h4>Camera-Based Scanning</h4>
+            
+            <p>Using your device's camera offers convenience and accessibility:</p>
+            
+            <ul>
+                <li><strong>Mobile Devices:</strong> Smartphones and tablets with high-quality cameras</li>
+                <li><strong>Webcams:</strong> Computer cameras for quick document capture</li>
+                <li><strong>Document Cameras:</strong> Specialized cameras designed for document imaging</li>
+            </ul>
+            
+            <h4>Traditional Scanner Options</h4>
+            
+            <p>For higher quality results, dedicated scanners provide superior performance:</p>
+            
+            <ul>
+                <li><strong>Flatbed Scanners:</strong> Ideal for books, magazines, and fragile documents</li>
+                <li><strong>Sheet-fed Scanners:</strong> Efficient for multi-page documents</li>
+                <li><strong>All-in-One Devices:</strong> Combine printing, copying, and scanning functions</li>
+                <li><strong>Portable Scanners:</strong> Compact devices for mobile scanning needs</li>
+            </ul>
+            
+            <h3>Optimizing Scan Quality</h3>
+            
+            <p>Follow these guidelines to achieve the best scanning results:</p>
+            
+            <h4>Preparation Steps</h4>
+            
+            <ul>
+                <li><strong>Clean Documents:</strong> Remove dust, smudges, and wrinkles from documents before scanning</li>
+                <li><strong>Good Lighting:</strong> Ensure even, adequate lighting without shadows or glare</li>
+                <li><strong>Stable Positioning:</strong> Keep the camera or scanner steady during capture</li>
+                <li><strong>Proper Alignment:</strong> Position documents squarely for straight, professional results</li>
+            </ul>
+            
+            <h4>Technical Settings</h4>
+            
+            <ul>
+                <li><strong>Resolution:</strong> Use appropriate DPI (dots per inch) settings for your needs</li>
+                <li><strong>Color Mode:</strong> Choose between color, grayscale, or black and white based on document type</li>
+                <li><strong>File Format:</strong> Select the right balance between quality and file size</li>
+                <li><strong>Compression:</strong> Apply appropriate compression to optimize file size</li>
+            </ul>
+            
+            <h3>Technical Implementation of Scan to PDF</h3>
+            
+            <p>Our tool uses advanced client-side processing to create PDF documents directly in your browser. This approach offers significant advantages:</p>
+            
+            <h4>Client-Side Processing Benefits</h4>
+            
+            <ul>
+                <li><strong>Privacy Protection:</strong> Your documents never leave your computer</li>
+                <li><strong>No File Size Limits:</strong> Process documents of any size</li>
+                <li><strong>Instant Results:</strong> No waiting for server processing</li>
+                <li><strong>No Registration:</strong> Use immediately without creating accounts</li>
+            </ul>
+            
+            <h4>Technical Foundation</h4>
+            
+            <p>Our tool leverages modern web technologies for optimal performance:</p>
+            
+            <ul>
+                <li><strong>MediaDevices API:</strong> Access to device cameras for image capture</li>
+                <li><strong>Canvas API:</strong> Image processing and manipulation capabilities</li>
+                <li><strong>PDF-Lib Library:</strong> Robust PDF creation and modification functions</li>
+                <li><strong>File API:</strong> Handling of image uploads and processing</li>
+            </ul>
+            
+            <h3>Best Practices for Document Scanning</h3>
+            
+            <p>Follow these guidelines to achieve optimal scanning results:</p>
+            
+            <h4>Preparation and Strategy</h4>
+            
+            <ul>
+                <li><strong>Organize Documents:</strong> Sort and prepare documents before scanning</li>
+                <li><strong>Choose Appropriate Settings:</strong> Select resolution and quality based on intended use</li>
+                <li><strong>Consider File Naming:</strong> Use descriptive names for easy organization</li>
+                <li><strong>Plan for Storage:</strong> Determine where and how scanned documents will be stored</li>
+            </ul>
+            
+            <h4>Scanning Execution</h4>
+            
+            <ul>
+                <li><strong>Test Settings:</strong> Perform test scans to verify quality before processing large batches</li>
+                <li><strong>Maintain Consistency:</strong> Use consistent settings for related documents</li>
+                <li><strong>Review Results:</strong> Check scanned images for quality and completeness</li>
+                <li><strong>Backup Originals:</strong> Keep physical documents until digital copies are verified</li>
+            </ul>
+            
+            <h3>Common Use Cases and Applications</h3>
+            
+            <p>Document scanning serves important functions across various contexts:</p>
+            
+            <h4>Business and Office Applications</h4>
+            
+            <ul>
+                <li><strong>Document Archiving:</strong> Convert paper records to digital format for long-term storage</li>
+                <li><strong>Invoice Processing:</strong> Digitize invoices for accounting and record keeping</li>
+                <li><strong>Contract Management:</strong> Create digital copies of contracts for easy access and sharing</li>
+            </ul>
+            
+            <h4>Personal and Home Applications</h4>
+            
+            <ul>
+                <li><strong>Family Photos:</strong> Preserve old photographs by scanning them to digital format</li>
+                <li><strong>Personal Records:</strong> Create digital copies of important personal documents</li>
+                <li><strong>Recipe Collections:</strong> Digitize handwritten or clipped recipes for easy access</li>
+            </ul>
+            
+            <h4>Academic and Research Applications</h4>
+            
+            <ul>
+                <li><strong>Research Materials:</strong> Scan articles, book excerpts, and research notes</li>
+                <li><strong>Student Work:</strong> Create digital portfolios of assignments and projects</li>
+                <li><strong>Library Resources:</strong> Digitize reference materials for personal use</li>
+            </ul>
+            
+            <h3>Troubleshooting Common Scanning Issues</h3>
+            
+            <p>Even with advanced tools, you might encounter some common issues:</p>
+            
+            <h4>Poor Image Quality</h4>
+            
+            <ul>
+                <li><strong>Solution:</strong> Improve lighting, clean lens, use higher resolution settings</li>
+                <li><strong>Prevention:</strong> Test settings before scanning important documents</li>
+            </ul>
+            
+            <h4>Large File Sizes</h4>
+            
+            <ul>
+                <li><strong>Solution:</strong> Use compression, reduce resolution, or convert to black and white</li>
+                <li><strong>Prevention:</strong> Choose appropriate quality settings based on document needs</li>
+            </ul>
+            
+            <h4>Camera Access Problems</h4>
+            
+            <ul>
+                <li><strong>Solution:</strong> Check browser permissions, ensure camera is not in use by other applications</li>
+                <li><strong>Prevention:</strong> Use supported browsers and keep them updated</li>
+            </ul>
+            
+            <h3>Future Trends in Document Scanning</h3>
+            
+            <p>The field of document scanning continues to evolve with new technologies:</p>
+            
+            <ul>
+                <li><strong>AI-Powered Enhancement:</strong> Machine learning algorithms that automatically improve scan quality</li>
+                <li><strong>Advanced OCR:</strong> More accurate text recognition with support for complex layouts</li>
+                <li><strong>3D Document Capture:</strong> Technologies for capturing three-dimensional documents and objects</li>
+                <li><strong>Cloud Integration:</strong> Seamless connection between scanning tools and cloud storage</li>
+            </ul>
+            
+            <h3>Conclusion</h3>
+            
+            <p>Document scanning is an essential capability in today's digital workflow. Whether you're preserving important records, sharing documents, or reducing physical storage needs, being able to convert physical documents to PDF format significantly improves efficiency and accessibility.</p>
+            
+            <p>Our online Scan to PDF tool provides a secure, efficient solution that respects your privacy by processing documents entirely in your browser. With its intuitive interface and multiple capture options, you can create professional PDF documents without specialized equipment or technical expertise.</p>
+            
+            <p>By following the best practices outlined in this guide and leveraging the capabilities of our tool, you can ensure your document scanning processes are both effective and efficient. As scanning technologies continue to evolve, mastering these essential techniques will remain valuable across all personal and professional contexts.</p>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">Is it safe to process my documents with this tool?</div>
+                <div class="faq-answer">
+                    <p>Yes, absolutely. Our tool processes images and creates PDFs entirely in your browser using JavaScript. Your files never leave your computer or get uploaded to any server. This ensures complete privacy and security for your documents. The processing happens locally on your device, and once you close the browser tab, all temporary data is cleared.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What types of documents can I scan with this tool?</div>
+                <div class="faq-answer">
+                    <p>You can scan any flat document that can be captured with a camera. This includes paper documents, receipts, business cards, photographs, book pages, and more. The tool works best with documents that have good contrast and are positioned squarely to the camera.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Do I need a special scanner to use this tool?</div>
+                <div class="faq-answer">
+                    <p>No, you don't need a dedicated scanner. This tool works with any camera, including the one on your smartphone, tablet, or computer. For best results, ensure good lighting and a stable surface for your device during capture.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What is the maximum number of images I can include in one PDF?</div>
+                <div class="faq-answer">
+                    <p>There's no specific limit imposed by our tool. The actual limit depends on your device's memory and processing power. Most modern devices can comfortably handle PDFs with 50+ pages, but very large documents may take longer to process. If you encounter performance issues, try processing documents in smaller batches.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I edit the images after capturing them?</div>
+                <div class="faq-answer">
+                    <p>Our tool currently focuses on capturing images and converting them to PDF. For advanced image editing, you would need to use a dedicated image editor before uploading images to our tool. However, you can delete and recapture images if you're not satisfied with the results.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Will the PDF be searchable?</div>
+                <div class="faq-answer">
+                    <p>The PDFs created by our tool contain images of your documents. To make them searchable, you would need to use OCR (Optical Character Recognition) software separately. Many PDF viewers and editors include OCR functionality that can extract text from image-based PDFs.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What's the difference between your tool and other scan to PDF apps?</div>
+                <div class="faq-answer">
+                    <p>Our tool processes files entirely in your browser, which means your documents never leave your computer. This provides complete privacy and security. Many scanning apps upload your files to their servers, which could pose privacy concerns. Additionally, our tool is completely free with no watermarks, limitations, or registration requirements.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I use this tool on mobile devices?</div>
+                <div class="faq-answer">
+                    <p>Yes, our tool is fully responsive and works on mobile devices. In fact, mobile devices with high-quality cameras often produce excellent results. The interface adapts to smaller screens, and touch controls make it easy to capture and manage images. We recommend using the tool in landscape orientation on mobile devices for the best camera experience.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What browsers are supported?</div>
+                <div class="faq-answer">
+                    <p>Our tool works with all modern browsers that support the MediaDevices API, including Chrome, Firefox, Safari, and Edge. For camera access, you may need to grant permission when prompted by your browser. Some older browsers or browsers with strict privacy settings might have limited functionality.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Are there any watermarks on the generated PDFs?</div>
+                <div class="faq-answer">
+                    <p>No, our tool does not add any watermarks to your PDFs. The files you create are completely clean without any branding or limitations. We believe in providing truly free tools without compromising the quality or usability of your documents.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I rearrange the order of pages in the PDF?</div>
+                <div class="faq-answer">
+                    <p>Yes, you can rearrange the order of images before generating the PDF. Simply use the delete button to remove images you want to reposition, then capture them again in your desired order. The PDF will be created with images in the order they appear in the capture area.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What should I do if the camera isn't working?</div>
+                <div class="faq-answer">
+                    <p>If you're having trouble with the camera, try these steps: 1) Ensure you've granted camera permissions to your browser, 2) Check that no other application is using the camera, 3) Try refreshing the page, 4) Test with a different browser. If camera access continues to be problematic, you can always upload existing images from your device instead.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>PDF Tools</h3>
+                    <ul>
+                        <li><a href="#">PDF to Word</a></li>
+                        <li><a href="#">PDF to Excel</a></li>
+                        <li><a href="#">PDF to PowerPoint</a></li>
+                        <li><a href="#">PDF to JPG</a></li>
+                        <li><a href="#">Merge PDF</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Image Tools</h3>
+                    <ul>
+                        <li><a href="#">Image Converter</a></li>
+                        <li><a href="#">Image Resizer</a></li>
+                        <li><a href="#">Image Compressor</a></li>
+                        <li><a href="#">Watermark Remover</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Other Tools</h3>
+                    <ul>
+                        <li><a href="#">Video Converter</a></li>
+                        <li><a href="#">Audio Converter</a></li>
+                        <li><a href="#">Document Converter</a></li>
+                        <li><a href="#">Unit Converter</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Lifetime Free Tools. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const cameraContainer = document.getElementById('cameraContainer');
+        const videoElement = document.getElementById('videoElement');
+        const canvasElement = document.getElementById('canvasElement');
+        const startCameraBtn = document.getElementById('startCameraBtn');
+        const captureBtn = document.getElementById('captureBtn');
+        const stopCameraBtn = document.getElementById('stopCameraBtn');
+        const uploadImagesBtn = document.getElementById('uploadImagesBtn');
+        const fileInput = document.getElementById('fileInput');
+        const capturedImages = document.getElementById('capturedImages');
+        const generatePdfBtn = document.getElementById('generatePdfBtn');
+        const progressArea = document.getElementById('progressArea');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const resultArea = document.getElementById('resultArea');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const estimatedInfo = document.getElementById('estimatedInfo');
+        const pdfInfo = document.getElementById('pdfInfo');
+        
+        // File info elements
+        const imageCountValue = document.getElementById('imageCountValue');
+        const estimatedPages = document.getElementById('estimatedPages');
+        const fileSizeValue = document.getElementById('fileSizeValue');
+        
+        // PDF options
+        const sizeOptions = document.querySelectorAll('.size-option');
+        const orientationSelect = document.getElementById('orientation');
+        const qualitySelect = document.getElementById('quality');
+        const marginSelect = document.getElementById('margin');
+        
+        // Variables
+        let stream = null;
+        let capturedImagesData = [];
+        let generatedPdfBytes = null;
+        
+        // Event Listeners
+        startCameraBtn.addEventListener('click', startCamera);
+        captureBtn.addEventListener('click', captureImage);
+        stopCameraBtn.addEventListener('click', stopCamera);
+        uploadImagesBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFileUpload);
+        generatePdfBtn.addEventListener('click', generatePDF);
+        downloadBtn.addEventListener('click', downloadPDF);
+        
+        // Page size selection
+        sizeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                sizeOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                updateEstimatedInfo();
+            });
+        });
+        
+        // Option changes
+        orientationSelect.addEventListener('change', updateEstimatedInfo);
+        qualitySelect.addEventListener('change', updateEstimatedInfo);
+        marginSelect.addEventListener('change', updateEstimatedInfo);
+        
+        // FAQ functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+        
+        // Functions
+        async function startCamera() {
+            try {
+                // Request camera access
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } 
+                });
+                
+                // Set video source to the camera stream
+                videoElement.srcObject = stream;
+                videoElement.style.display = 'block';
+                
+                // Update UI
+                document.querySelector('.camera-placeholder').style.display = 'none';
+                document.getElementById('cameraStatus').textContent = 'Camera is active';
+                
+                startCameraBtn.disabled = true;
+                captureBtn.disabled = false;
+                stopCameraBtn.disabled = false;
+                
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                alert('Unable to access camera. Please check permissions and try again.');
+            }
+        }
+        
+        function stopCamera() {
+            if (stream) {
+                // Stop all tracks in the stream
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+                
+                // Update UI
+                videoElement.style.display = 'none';
+                document.querySelector('.camera-placeholder').style.display = 'block';
+                document.getElementById('cameraStatus').textContent = 'Camera stopped';
+                
+                startCameraBtn.disabled = false;
+                captureBtn.disabled = true;
+                stopCameraBtn.disabled = true;
+            }
+        }
+        
+        function captureImage() {
+            if (!stream) return;
+            
+            // Set canvas dimensions to match video
+            const videoWidth = videoElement.videoWidth;
+            const videoHeight = videoElement.videoHeight;
+            canvasElement.width = videoWidth;
+            canvasElement.height = videoHeight;
+            
+            // Draw current video frame to canvas
+            const context = canvasElement.getContext('2d');
+            context.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
+            
+            // Convert canvas to data URL
+            const imageDataUrl = canvasElement.toDataURL('image/jpeg', 0.8);
+            
+            // Add to captured images
+            addCapturedImage(imageDataUrl);
+        }
+        
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            if (files.length === 0) return;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) continue;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    addCapturedImage(e.target.result, file.name);
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            // Reset file input
+            event.target.value = '';
+        }
+        
+        function addCapturedImage(dataUrl, fileName = null) {
+            const imageId = Date.now() + Math.random();
+            const imageObj = {
+                id: imageId,
+                dataUrl: dataUrl,
+                name: fileName || `captured_${capturedImagesData.length + 1}.jpg`
+            };
+            
+            capturedImagesData.push(imageObj);
+            updateCapturedImagesDisplay();
+            updateFileInfo();
+            updateEstimatedInfo();
+            
+            // Enable generate button if we have images
+            if (capturedImagesData.length > 0) {
+                generatePdfBtn.disabled = false;
+            }
+        }
+        
+        function removeCapturedImage(imageId) {
+            capturedImagesData = capturedImagesData.filter(img => img.id !== imageId);
+            updateCapturedImagesDisplay();
+            updateFileInfo();
+            updateEstimatedInfo();
+            
+            // Disable generate button if no images left
+            if (capturedImagesData.length === 0) {
+                generatePdfBtn.disabled = true;
+            }
+        }
+        
+        function updateCapturedImagesDisplay() {
+            if (capturedImagesData.length === 0) {
+                capturedImages.innerHTML = `
+                    <p style="grid-column: 1 / -1; text-align: center; color: #666; padding: 20px;">
+                        No images captured yet
+                    </p>
+                `;
+                return;
+            }
+            
+            capturedImages.innerHTML = '';
+            capturedImagesData.forEach(img => {
+                const imageElement = document.createElement('div');
+                imageElement.className = 'captured-image';
+                imageElement.innerHTML = `
+                    <img src="${img.dataUrl}" alt="Captured image">
+                    <div class="image-actions">
+                        <button onclick="removeCapturedImage(${img.id})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                capturedImages.appendChild(imageElement);
+            });
+        }
+        
+        function updateFileInfo() {
+            if (capturedImagesData.length === 0) {
+                document.getElementById('fileInfoDetails').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('fileInfoDetails').style.display = 'flex';
+            imageCountValue.textContent = capturedImagesData.length;
+            estimatedPages.textContent = capturedImagesData.length;
+            
+            // Calculate approximate total size
+            let totalSize = 0;
+            capturedImagesData.forEach(img => {
+                // Approximate size based on data URL length
+                totalSize += (img.dataUrl.length * 3) / 4; // Base64 is about 4/3 of original size
+            });
+            
+            fileSizeValue.textContent = formatFileSize(totalSize);
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function updateEstimatedInfo() {
+            if (capturedImagesData.length === 0) {
+                estimatedInfo.textContent = '';
+                return;
+            }
+            
+            const pageSize = document.querySelector('.size-option.active').getAttribute('data-size');
+            const orientation = orientationSelect.value;
+            const quality = qualitySelect.value;
+            
+            estimatedInfo.textContent = `Estimated PDF: ${capturedImagesData.length} pages, ${pageSize} ${orientation}`;
+        }
+        
+        async function generatePDF() {
+            if (capturedImagesData.length === 0) return;
+            
+            // Show progress area
+            progressArea.style.display = 'block';
+            resultArea.style.display = 'none';
+            
+            try {
+                // Create a new PDF document
+                const { PDFDocument } = PDFLib;
+                const pdfDoc = await PDFDocument.create();
+                
+                // Get PDF settings
+                const pageSize = document.querySelector('.size-option.active').getAttribute('data-size');
+                const orientation = orientationSelect.value;
+                const quality = qualitySelect.value;
+                const margin = marginSelect.value;
+                
+                // Define page dimensions based on selected size and orientation
+                const pageDimensions = getPageDimensions(pageSize, orientation);
+                
+                // Process each image
+                for (let i = 0; i < capturedImagesData.length; i++) {
+                    // Update progress
+                    const progress = ((i + 1) / capturedImagesData.length) * 100;
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `Processing image ${i + 1} of ${capturedImagesData.length}`;
+                    
+                    // Add a new page
+                    const page = pdfDoc.addPage([pageDimensions.width, pageDimensions.height]);
+                    
+                    // Embed the image
+                    const imageData = capturedImagesData[i].dataUrl;
+                    let image;
+                    if (imageData.startsWith('data:image/jpeg')) {
+                        image = await pdfDoc.embedJpg(imageData);
+                    } else if (imageData.startsWith('data:image/png')) {
+                        image = await pdfDoc.embedPng(imageData);
+                    } else {
+                        // Default to JPEG for other formats
+                        image = await pdfDoc.embedJpg(imageData);
+                    }
+                    
+                    // Calculate dimensions to fit the page with margin
+                    const marginSize = getMarginSize(margin);
+                    const maxWidth = pageDimensions.width - (2 * marginSize);
+                    const maxHeight = pageDimensions.height - (2 * marginSize);
+                    
+                    // Scale image to fit page while maintaining aspect ratio
+                    const imageDims = image.scaleToFit(maxWidth, maxHeight);
+                    
+                    // Center the image on the page
+                    const x = (pageDimensions.width - imageDims.width) / 2;
+                    const y = (pageDimensions.height - imageDims.height) / 2;
+                    
+                    // Draw the image on the page
+                    page.drawImage(image, {
+                        x: x,
+                        y: y,
+                        width: imageDims.width,
+                        height: imageDims.height,
+                    });
+                }
+                
+                // Save the PDF
+                progressText.textContent = 'Finalizing PDF...';
+                generatedPdfBytes = await pdfDoc.save();
+                
+                // Update result area
+                pdfInfo.textContent = `PDF created with ${capturedImagesData.length} pages, ${formatFileSize(generatedPdfBytes.length)}`;
+                
+                // Hide progress and show results
+                setTimeout(() => {
+                    progressArea.style.display = 'none';
+                    resultArea.style.display = 'block';
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Error generating PDF. Please try again with different images.');
+                progressArea.style.display = 'none';
+            }
+        }
+        
+        function getPageDimensions(size, orientation) {
+            // Dimensions in points (1 point = 1/72 inch)
+            const dimensions = {
+                'A4': { width: 595, height: 842 },
+                'Letter': { width: 612, height: 792 },
+                'Legal': { width: 612, height: 1008 },
+                'A3': { width: 842, height: 1191 }
+            };
+            
+            let dim = dimensions[size] || dimensions['A4'];
+            
+            // Swap dimensions for landscape orientation
+            if (orientation === 'landscape') {
+                return { width: dim.height, height: dim.width };
+            }
+            
+            return dim;
+        }
+        
+        function getMarginSize(margin) {
+            const margins = {
+                'none': 0,
+                'small': 36, // 0.5 inch
+                'medium': 72, // 1 inch
+                'large': 144 // 2 inches
+            };
+            
+            return margins[margin] || margins['small'];
+        }
+        
+        function downloadPDF() {
+            if (!generatedPdfBytes) return;
+            
+            const fileName = `scanned_document_${Date.now()}.pdf`;
+            download(generatedPdfBytes, fileName, "application/pdf");
+        }
+    </script>
+</body>
+</html>

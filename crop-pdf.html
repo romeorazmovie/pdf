@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online PDF tool to crop PDF pages. Adjust margins, remove unwanted areas, and customize page size with precision.">
+    <meta name="keywords" content="PDF crop, crop PDF, PDF tools, PDF editor, resize PDF">
+    <title>PDF Crop Tool - Free Online PDF Editor | Lifetime Free Tools</title>
+	<link rel="icon" type="image/x-icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAuUG_XfUAa_1c97EIqIm4rfYgbKbUdfDGfhVFEpEqY1n2M0WrxRoVBqFrzmY54P4aJl1eAVCstZkBvP5VQtywsYqCfL8bgJxwYQT_llwz-okWyx7AVHiLN0jzqa98LHlgKNHuH1LFhl7BlHzhR9CfS2sllvnJLbV6nHpzEXKYOW67Aehyzo8GhvWeRWg/s320/pdf%202.webp">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7"></script>
+    <style>
+        :root {
+            --primary-color: #00A591;
+            --primary-dark: #008975;
+            --text-color: #333;
+            --light-bg: #f9f9f9;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-left: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 28px;
+            color: var(--primary-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary-color);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .hero {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .hero h2 {
+            color: var(--primary-color);
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: #666;
+        }
+        
+        /* Editor Section */
+        .editor-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .upload-area {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .upload-area h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .drop-zone:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(0, 165, 145, 0.05);
+        }
+        
+        .drop-zone i {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .drop-zone p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .options-area {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .options-area h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .option-group {
+            margin-bottom: 20px;
+        }
+        
+        .option-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .option-group select, .option-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .margin-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .margin-control {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .margin-control label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .margin-value {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .preview-box {
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            margin-top: 10px;
+            text-align: center;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .preview-page {
+            width: 200px;
+            height: 280px;
+            background: white;
+            border: 1px solid #ccc;
+            position: relative;
+            margin: 0 auto;
+        }
+        
+        .crop-indicator {
+            position: absolute;
+            border: 2px dashed var(--primary-color);
+            background-color: rgba(0, 165, 145, 0.1);
+        }
+        
+        .progress-area {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .result-area {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .result-area h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .preview-container {
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 20px;
+            min-height: 300px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .preview-container p {
+            color: #666;
+            text-align: center;
+        }
+        
+        /* Blog Content Styles */
+        .blog-content {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+        
+        .blog-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        
+        .blog-content h3 {
+            color: var(--primary-color);
+            margin: 25px 0 15px;
+            font-size: 22px;
+        }
+        
+        .blog-content p {
+            margin-bottom: 15px;
+        }
+        
+        .blog-content ul, .blog-content ol {
+            margin: 15px 0 15px 30px;
+        }
+        
+        .blog-content li {
+            margin-bottom: 8px;
+        }
+        
+        .blog-content blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .faq-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .faq-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        
+        .faq-question {
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-question::after {
+            content: '+';
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+        
+        .faq-answer {
+            color: #666;
+            line-height: 1.6;
+            display: none;
+        }
+        
+        .faq-item.active .faq-question::after {
+            content: '-';
+        }
+        
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+        
+        /* Ad Spaces */
+        .ad-space {
+            background-color: #f0f0f0;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            margin: 30px 0;
+            color: #666;
+        }
+        
+        .ad-space.horizontal {
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ad-space.vertical {
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 40px 0 20px;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-column h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                padding: 15px;
+            }
+            
+            .logo {
+                margin-bottom: 15px;
+            }
+            
+            nav {
+                width: 100%;
+            }
+            
+            nav ul {
+                justify-content: space-between;
+                width: 100%;
+            }
+            
+            nav ul li {
+                margin: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                top: 15px;
+                right: 15px;
+            }
+            
+            .hero {
+                padding: 30px 20px;
+            }
+            
+            .hero h2 {
+                font-size: 26px;
+            }
+            
+            .upload-area, .options-area {
+                min-width: 100%;
+            }
+            
+            .margin-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .blog-content, .faq-section {
+                padding: 30px 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero {
+                padding: 20px 15px;
+            }
+            
+            .hero h2 {
+                font-size: 22px;
+            }
+            
+            .upload-area, .options-area, .progress-area, .result-area {
+                padding: 20px;
+            }
+            
+            .blog-content, .faq-section {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon"><i class="fas fa-file-pdf"></i></span>
+                <h1>Lifetime Free Tools</h1>
+            </div>
+            <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">All Tools</a></li>
+                    <li><a href="#">PDF Tools</a></li>
+                    <li><a href="#">Image Tools</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>PDF Crop Tool</h2>
+            <p>Crop your PDF pages with precision. Remove unwanted margins, adjust page size, and focus on important content.</p>
+        </section>
+
+        <!-- Horizontal Ad Space -->
+        <div class="ad-space horizontal">
+            <!-- Google Adsense Ad Unit -->
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-1234567890123456"
+                 data-ad-slot="1234567890"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- Editor Section -->
+        <div class="editor-section">
+            <!-- Upload Area -->
+            <div class="upload-area">
+                <h3>Upload PDF File</h3>
+                <div class="drop-zone" id="dropZone">
+                    <i class="fas fa-file-pdf"></i>
+                    <p>Drag & Drop your PDF file here</p>
+                    <p>or</p>
+                    <button class="btn" id="browseBtn">Browse Files</button>
+                    <input type="file" id="fileInput" class="file-input" accept=".pdf">
+                </div>
+                <div id="fileInfo"></div>
+            </div>
+
+            <!-- Options Area -->
+            <div class="options-area">
+                <h3>Crop Settings</h3>
+                
+                <div class="option-group">
+                    <label for="cropMode">Crop Mode</label>
+                    <select id="cropMode">
+                        <option value="margins">Adjust Margins</option>
+                        <option value="custom">Custom Crop</option>
+                        <option value="preset">Preset Sizes</option>
+                    </select>
+                </div>
+                
+                <div id="marginsOptions">
+                    <div class="option-group">
+                        <label>Margin Adjustments (in points)</label>
+                        <div class="margin-controls">
+                            <div class="margin-control">
+                                <label>Top <span class="margin-value" id="topValue">0</span></label>
+                                <input type="range" id="topMargin" min="0" max="100" value="0">
+                            </div>
+                            <div class="margin-control">
+                                <label>Right <span class="margin-value" id="rightValue">0</span></label>
+                                <input type="range" id="rightMargin" min="0" max="100" value="0">
+                            </div>
+                            <div class="margin-control">
+                                <label>Bottom <span class="margin-value" id="bottomValue">0</span></label>
+                                <input type="range" id="bottomMargin" min="0" max="100" value="0">
+                            </div>
+                            <div class="margin-control">
+                                <label>Left <span class="margin-value" id="leftValue">0</span></label>
+                                <input type="range" id="leftMargin" min="0" max="100" value="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="customOptions" style="display: none;">
+                    <div class="option-group">
+                        <label for="cropWidth">Crop Width (points)</label>
+                        <input type="number" id="cropWidth" min="100" value="500">
+                    </div>
+                    <div class="option-group">
+                        <label for="cropHeight">Crop Height (points)</label>
+                        <input type="number" id="cropHeight" min="100" value="700">
+                    </div>
+                </div>
+                
+                <div id="presetOptions" style="display: none;">
+                    <div class="option-group">
+                        <label for="presetSize">Preset Size</label>
+                        <select id="presetSize">
+                            <option value="letter">Letter (8.5" x 11")</option>
+                            <option value="a4">A4 (8.27" x 11.69")</option>
+                            <option value="legal">Legal (8.5" x 14")</option>
+                            <option value="a5">A5 (5.83" x 8.27")</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <label>Preview</label>
+                    <div class="preview-box">
+                        <div class="preview-page" id="previewPage">
+                            <div class="crop-indicator" id="cropIndicator"></div>
+                        </div>
+                        <p style="margin-top: 15px; font-size: 14px;">Blue dashed area shows the crop region</p>
+                    </div>
+                </div>
+                
+                <button class="btn" id="processBtn" disabled>Crop PDF</button>
+            </div>
+        </div>
+
+        <!-- Progress Area -->
+        <div class="progress-area" id="progressArea">
+            <h3>Cropping PDF...</h3>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <p id="progressText">Processing...</p>
+        </div>
+
+        <!-- Result Area -->
+        <div class="result-area" id="resultArea">
+            <h3>Cropped PDF</h3>
+            <div class="preview-container" id="previewContainer">
+                <p>Your cropped PDF will appear here</p>
+            </div>
+            <div class="download-all">
+                <button class="btn" id="downloadBtn">Download Cropped PDF</button>
+            </div>
+        </div>
+
+        <!-- Vertical Ad Space -->
+        <div class="ad-space vertical">
+            <!-- Google Adsense Ad Unit -->
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-1234567890123456"
+                 data-ad-slot="0987654321"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- Blog Content Section -->
+        <div class="blog-content">
+            <h2>Complete Guide to PDF Cropping: Everything You Need to Know</h2>
+            
+            <p>PDF cropping is an essential skill for anyone working with digital documents. Whether you're preparing a report, creating a presentation, or organizing your digital files, knowing how to properly crop PDF pages can save time, improve readability, and enhance the professional appearance of your documents. In this comprehensive guide, we'll explore everything you need to know about PDF cropping, from basic techniques to advanced applications.</p>
+            
+            <h3>Understanding PDF Cropping</h3>
+            
+            <p>PDF cropping involves adjusting the visible area of a PDF page by removing unwanted margins or content from the edges. Unlike image cropping, which permanently removes content, PDF cropping typically works by defining a "crop box" that determines which portion of the page is displayed and printed.</p>
+            
+            <h4>Key PDF Box Types</h4>
+            
+            <p>To understand PDF cropping, it's important to know about the different box types in a PDF:</p>
+            
+            <ul>
+                <li><strong>Media Box:</strong> The complete page area, including any bleeds or printer marks</li>
+                <li><strong>Crop Box:</strong> The visible area of the page that's displayed and printed</li>
+                <li><strong>Bleed Box:</strong> The area that extends beyond the crop box for printing purposes</li>
+                <li><strong>Trim Box:</strong> The final size of the printed page after trimming</li>
+                <li><strong>Art Box:</strong> The area containing meaningful content</li>
+            </ul>
+            
+            <blockquote>
+                <p>Note: Most PDF viewers and printers use the crop box to determine what portion of the page to display or print. When you crop a PDF, you're typically adjusting the crop box.</p>
+            </blockquote>
+            
+            <h3>Why Crop PDF Documents?</h3>
+            
+            <p>There are numerous reasons why you might need to crop a PDF document:</p>
+            
+            <h4>Improving Document Appearance</h4>
+            
+            <ul>
+                <li><strong>Remove Excessive Margins:</strong> Eliminate unnecessary white space for a cleaner look</li>
+                <li><strong>Focus on Content:</strong> Highlight important information by removing distractions</li>
+                <li><strong>Standardize Layout:</strong> Ensure consistent margins across multiple documents</li>
+            </ul>
+            
+            <h4>Practical Applications</h4>
+            
+            <ul>
+                <li><strong>Print Optimization:</strong> Adjust page size to fit specific printing requirements</li>
+                <li><strong>Digital Presentation:</strong> Create better viewing experiences for screens and mobile devices</li>
+                <li><strong>File Size Reduction:</strong> Remove unnecessary content to decrease file size</li>
+                <li><strong>Content Extraction:</strong> Isolate specific sections of a page for separate use</li>
+            </ul>
+            
+            <h3>Cropping Methods and Techniques</h3>
+            
+            <p>Our PDF cropping tool offers several methods to accommodate different needs:</p>
+            
+            <h4>Margin Adjustment</h4>
+            
+            <p>This method allows you to adjust the margins uniformly or individually from each side of the page. It's ideal for:</p>
+            
+            <ul>
+                <li>Quickly removing white space around content</li>
+                <li>Creating consistent margins across multiple pages</li>
+                <li>Preparing documents for specific printing requirements</li>
+            </ul>
+            
+            <h4>Custom Cropping</h4>
+            
+            <p>For precise control, custom cropping lets you specify exact dimensions for your cropped area. This is useful for:</p>
+            
+            <ul>
+                <li>Creating non-standard page sizes</li>
+                <li>Extracting specific content regions</li>
+                <li>Preparing documents for specialized applications</li>
+            </ul>
+            
+            <h4>Preset Sizes</h4>
+            
+            <p>Our tool includes common preset sizes for quick cropping to standard dimensions:</p>
+            
+            <ul>
+                <li><strong>Letter (8.5" x 11"):</strong> Standard US paper size</li>
+                <li><strong>A4 (8.27" x 11.69"):</strong> International standard paper size</li>
+                <li><strong>Legal (8.5" x 14"):</strong> Used for legal documents in the US</li>
+                <li><strong>A5 (5.83" x 8.27"):</strong> Half of A4, ideal for booklets</li>
+            </ul>
+            
+            <h3>Technical Implementation of PDF Cropping</h3>
+            
+            <p>Our tool uses advanced client-side processing to crop PDF documents directly in your browser. This approach offers significant advantages:</p>
+            
+            <h4>Client-Side Processing Benefits</h4>
+            
+            <ul>
+                <li><strong>Privacy Protection:</strong> Your documents never leave your computer</li>
+                <li><strong>No File Size Limits:</strong> Process documents of any size</li>
+                <li><strong>Instant Results:</strong> No waiting for server processing</li>
+                <li><strong>No Registration:</strong> Use immediately without creating accounts</li>
+            </ul>
+            
+            <h4>Technical Foundation</h4>
+            
+            <p>Our tool leverages the PDF-Lib JavaScript library, which provides:</p>
+            
+            <ul>
+                <li>Robust PDF parsing and modification capabilities</li>
+                <li>Precise control over PDF box dimensions</li>
+                <li>Support for complex PDF structures</li>
+                <li>Maintenance of PDF quality and compatibility</li>
+            </ul>
+            
+            <h3>Best Practices for PDF Cropping</h3>
+            
+            <p>Follow these guidelines to achieve optimal cropping results:</p>
+            
+            <h4>Preparation and Planning</h4>
+            
+            <ul>
+                <li><strong>Review Document Structure:</strong> Understand how cropping will affect multi-page documents</li>
+                <li><strong>Check Content Alignment:</strong> Ensure important content won't be cut off</li>
+                <li><strong>Consider Page Variations:</strong> Account for different page sizes or orientations</li>
+                <li><strong>Test with Sample Pages:</strong> Crop a few pages first to verify results</li>
+            </ul>
+            
+            <h4>Execution Tips</h4>
+            
+            <ul>
+                <li><strong>Use Preview Features:</strong> Always check the preview before finalizing changes</li>
+                <li><strong>Maintain Aspect Ratio:</strong> Consider preserving the original width-to-height ratio</li>
+                <li><strong>Keep Important Margins:</strong> Ensure sufficient white space for readability</li>
+                <li><strong>Save Originals:</strong> Keep backup copies of uncropped documents</li>
+            </ul>
+            
+            <h3>Common Use Cases and Applications</h3>
+            
+            <p>PDF cropping serves important functions across various document types and industries:</p>
+            
+            <h4>Business and Corporate Applications</h4>
+            
+            <ul>
+                <li><strong>Report Preparation:</strong> Remove scanner artifacts or unnecessary borders from scanned documents</li>
+                <li><strong>Presentation Materials:</strong> Create clean, focused slides from existing PDF content</li>
+                <li><strong>Contract Management:</strong> Standardize document appearance across multiple contracts</li>
+            </ul>
+            
+            <h4>Academic and Publishing Applications</h4>
+            
+            <ul>
+                <li><strong>Research Papers:</strong> Adjust margins to meet publication requirements</li>
+                <li><strong>Textbook Preparation:</strong> Extract specific diagrams or illustrations</li>
+                <li><strong>Thesis Formatting:</strong> Ensure consistent margins throughout lengthy documents</li>
+            </ul>
+            
+            <h4>Creative and Design Applications</h4>
+            
+            <ul>
+                <li><strong>Portfolio Preparation:</strong> Create uniform presentation of creative work</li>
+                <li><strong>Marketing Materials:</strong> Optimize PDFs for digital distribution</li>
+                <li><strong>Photo Books:</strong> Adjust page layouts for optimal image display</li>
+            </ul>
+            
+            <h3>Troubleshooting Common Cropping Issues</h3>
+            
+            <p>Even with advanced tools, you might encounter some common issues:</p>
+            
+            <h4>Content Cut-Off Problems</h4>
+            
+            <ul>
+                <li><strong>Solution:</strong> Use smaller margin adjustments or custom cropping with precise measurements</li>
+                <li><strong>Prevention:</strong> Always preview changes and check multiple pages in multi-page documents</li>
+            </ul>
+            
+            <h4>Inconsistent Results Across Pages</h4>
+            
+            <ul>
+                <li><strong>Solution:</strong> Check if pages have different original sizes or orientations</li>
+                <li><strong>Prevention:</strong> Use uniform cropping settings or process pages with similar characteristics together</li>
+            </ul>
+            
+            <h4>File Size Increases</h4>
+            
+            <ul>
+                <li><strong>Solution:</strong> Some cropping methods may increase file size; consider compressing after cropping</li>
+                <li><strong>Prevention:</strong> Use margin adjustment rather than custom cropping when possible</li>
+            </ul>
+            
+            <h3>Advanced Cropping Techniques</h3>
+            
+            <p>For complex cropping needs, consider these advanced approaches:</p>
+            
+            <h4>Selective Page Cropping</h4>
+            
+            <p>Apply different cropping settings to specific pages within a document. This is useful for:</p>
+            
+            <ul>
+                <li>Documents with mixed orientation pages</li>
+                <li>Combining content from different sources</li>
+                <li>Creating custom page layouts within a single document</li>
+            </ul>
+            
+            <h4>Content-Aware Cropping</h4>
+            
+            <p>Some advanced tools can automatically detect content boundaries and crop accordingly. While our current tool doesn't offer this feature, it's available in some premium PDF editors.</p>
+            
+            <h4>Batch Processing</h4>
+            
+            <p>For large document collections, batch cropping can save significant time. While our tool processes one document at a time, some desktop applications offer batch processing capabilities.</p>
+            
+            <h3>Future Trends in PDF Manipulation</h3>
+            
+            <p>The field of PDF manipulation continues to evolve with new technologies:</p>
+            
+            <ul>
+                <li><strong>AI-Powered Cropping:</strong> Intelligent algorithms that automatically detect optimal crop boundaries</li>
+                <li><strong>Enhanced Mobile Capabilities:</strong> Improved PDF manipulation on smartphones and tablets</li>
+                <li><strong>Cloud Integration:</strong> Seamless cropping directly from cloud storage services</li>
+                <li><strong>Collaborative Editing:</strong> Real-time collaborative PDF manipulation</li>
+            </ul>
+            
+            <h3>Conclusion</h3>
+            
+            <p>PDF cropping is a fundamental skill in digital document management. Whether you're preparing business reports, academic papers, or creative presentations, understanding how to properly crop PDF pages can significantly enhance your documents' appearance and functionality.</p>
+            
+            <p>Our online PDF cropping tool provides a secure, efficient solution that respects your privacy by processing documents entirely in your browser. With its intuitive interface and multiple cropping methods, you can achieve professional results without specialized software or technical expertise.</p>
+            
+            <p>By following the best practices outlined in this guide and leveraging the capabilities of our tool, you can ensure your PDF documents are optimally formatted for their intended use. As document technologies continue to evolve, mastering these essential skills will remain valuable across all professional contexts.</p>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">Is it safe to process my PDF files with this tool?</div>
+                <div class="faq-answer">
+                    <p>Yes, absolutely. Our tool processes PDF files entirely in your browser using JavaScript. Your files never leave your computer or get uploaded to any server. This ensures complete privacy and security for your documents. The processing happens locally on your device, and once you close the browser tab, all temporary data is cleared.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What is the maximum file size I can process?</div>
+                <div class="faq-answer">
+                    <p>There's no specific file size limit imposed by our tool. The actual limit depends on your device's memory and processing power. Most modern devices can comfortably handle PDFs up to 100MB, but very large files may take longer to process. If you encounter performance issues with large files, try closing other applications to free up system resources.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I crop specific pages differently?</div>
+                <div class="faq-answer">
+                    <p>Our current tool applies the same cropping settings to all pages in the document. If you need to crop specific pages differently, you would need to process those pages separately or use a more advanced PDF editor that supports selective page cropping. We're considering adding this feature in a future update.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Will cropping reduce my PDF file size?</div>
+                <div class="faq-answer">
+                    <p>It depends on the cropping method and the original PDF structure. In some cases, cropping can reduce file size by removing unnecessary content outside the crop area. However, in other cases, the file size might remain the same or even increase slightly due to how PDF compression works. For significant file size reduction, consider using a PDF compression tool after cropping.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I undo the cropping if I make a mistake?</div>
+                <div class="faq-answer">
+                    <p>Since the processing happens in real-time and the original file remains unchanged, you can simply reprocess the original file if you're not satisfied with the results. We recommend keeping a backup of your original PDF until you're happy with the cropped version. The tool doesn't have an undo function during the same session, but you can always start over with your original file.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What happens if I crop too much and important content is cut off?</div>
+                <div class="faq-answer">
+                    <p>If you accidentally crop too much content, you can simply reprocess your original PDF with different settings. The preview feature in our tool helps prevent this issue by showing you exactly what will be included in the cropped area before you process the entire document. Always check the preview carefully before finalizing your cropping settings.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I crop PDFs with different page sizes in the same document?</div>
+                <div class="faq-answer">
+                    <p>Yes, our tool can handle PDFs with mixed page sizes. However, the same cropping settings will be applied to all pages. If your document has significantly different page sizes, you may need to find a compromise setting that works for all pages or process pages with similar sizes separately.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What is the difference between points and inches in PDF measurements?</div>
+                <div class="faq-answer">
+                    <p>In PDF measurements, a point is 1/72 of an inch. This standard comes from the printing industry. Our tool uses points for precise control over cropping dimensions. If you're more comfortable with inches, you can convert using the formula: inches = points / 72. For example, 72 points equals 1 inch, 144 points equals 2 inches, etc.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Are there any watermarks on the processed PDF?</div>
+                <div class="faq-answer">
+                    <p>No, our tool does not add any watermarks to your processed PDFs. The files you download are completely clean without any branding or limitations. We believe in providing truly free tools without compromising the quality or usability of your documents.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I use this tool on mobile devices?</div>
+                <div class="faq-answer">
+                    <p>Yes, our tool is fully responsive and works on mobile devices, though the experience may vary depending on your device's capabilities and screen size. Processing larger files on mobile devices may be slower than on desktop computers due to hardware limitations. We recommend using the tool on a computer for the best experience, especially when working with large or complex documents.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What PDF versions are supported?</div>
+                <div class="faq-answer">
+                    <p>Our tool supports most PDF versions, including PDF 1.0 through PDF 2.0. However, some advanced features in newer PDF versions might not be fully supported. If you encounter issues with a specific PDF, try saving it as a standard PDF 1.4 or 1.7 version before processing.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I crop password-protected PDFs?</div>
+                <div class="faq-answer">
+                    <p>No, our tool cannot process password-protected PDFs. You would need to remove the password protection first using a PDF editor, then use our tool to crop the PDF, and optionally reapply protection afterward.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>PDF Tools</h3>
+                    <ul>
+                        <li><a href="#">PDF to Word</a></li>
+                        <li><a href="#">PDF to Excel</a></li>
+                        <li><a href="#">PDF to PowerPoint</a></li>
+                        <li><a href="#">PDF to JPG</a></li>
+                        <li><a href="#">Merge PDF</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Image Tools</h3>
+                    <ul>
+                        <li><a href="#">Image Converter</a></li>
+                        <li><a href="#">Image Resizer</a></li>
+                        <li><a href="#">Image Compressor</a></li>
+                        <li><a href="#">Watermark Remover</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Other Tools</h3>
+                    <ul>
+                        <li><a href="#">Video Converter</a></li>
+                        <li><a href="#">Audio Converter</a></li>
+                        <li><a href="#">Document Converter</a></li>
+                        <li><a href="#">Unit Converter</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Lifetime Free Tools. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const browseBtn = document.getElementById('browseBtn');
+        const fileInfo = document.getElementById('fileInfo');
+        const processBtn = document.getElementById('processBtn');
+        const progressArea = document.getElementById('progressArea');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const resultArea = document.getElementById('resultArea');
+        const previewContainer = document.getElementById('previewContainer');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const previewPage = document.getElementById('previewPage');
+        const cropIndicator = document.getElementById('cropIndicator');
+        
+        // Option elements
+        const cropModeSelect = document.getElementById('cropMode');
+        const marginsOptions = document.getElementById('marginsOptions');
+        const customOptions = document.getElementById('customOptions');
+        const presetOptions = document.getElementById('presetOptions');
+        
+        // Margin controls
+        const topMargin = document.getElementById('topMargin');
+        const rightMargin = document.getElementById('rightMargin');
+        const bottomMargin = document.getElementById('bottomMargin');
+        const leftMargin = document.getElementById('leftMargin');
+        const topValue = document.getElementById('topValue');
+        const rightValue = document.getElementById('rightValue');
+        const bottomValue = document.getElementById('bottomValue');
+        const leftValue = document.getElementById('leftValue');
+        
+        // Custom crop controls
+        const cropWidth = document.getElementById('cropWidth');
+        const cropHeight = document.getElementById('cropHeight');
+        
+        // Preset controls
+        const presetSize = document.getElementById('presetSize');
+        
+        // Variables
+        let selectedFile = null;
+        let processedPdfBytes = null;
+        let originalPageSize = { width: 612, height: 792 }; // Default letter size in points
+        
+        // Event Listeners
+        browseBtn.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelection(e.target.files[0]);
+            }
+        });
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#00A591';
+            dropZone.style.backgroundColor = 'rgba(0, 165, 145, 0.05)';
+        });
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = '#e0e0e0';
+            dropZone.style.backgroundColor = '';
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#e0e0e0';
+            dropZone.style.backgroundColor = '';
+            
+            if (e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                if (file.type === 'application/pdf') {
+                    handleFileSelection(file);
+                } else {
+                    alert('Please upload a PDF file.');
+                }
+            }
+        });
+        
+        processBtn.addEventListener('click', cropPDF);
+        
+        downloadBtn.addEventListener('click', downloadPDF);
+        
+        // Crop mode change
+        cropModeSelect.addEventListener('change', updateCropMode);
+        
+        // Margin controls change
+        topMargin.addEventListener('input', updateMarginPreview);
+        rightMargin.addEventListener('input', updateMarginPreview);
+        bottomMargin.addEventListener('input', updateMarginPreview);
+        leftMargin.addEventListener('input', updateMarginPreview);
+        
+        // Custom crop controls change
+        cropWidth.addEventListener('change', updateCustomPreview);
+        cropHeight.addEventListener('change', updateCustomPreview);
+        
+        // Preset size change
+        presetSize.addEventListener('change', updatePresetPreview);
+        
+        // FAQ functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+        
+        // Functions
+        function handleFileSelection(file) {
+            if (file.type !== 'application/pdf') {
+                alert('Please upload a PDF file.');
+                return;
+            }
+            
+            selectedFile = file;
+            fileInfo.innerHTML = `
+                <p><strong>Selected File:</strong> ${file.name}</p>
+                <p><strong>Size:</strong> ${formatFileSize(file.size)}</p>
+            `;
+            processBtn.disabled = false;
+            
+            // Try to get page size from PDF
+            getPDFPageSize(file).then(size => {
+                if (size) {
+                    originalPageSize = size;
+                    updateAllPreviews();
+                }
+            }).catch(error => {
+                console.error('Error getting PDF page size:', error);
+                // Use default size if we can't determine the actual size
+                originalPageSize = { width: 612, height: 792 };
+                updateAllPreviews();
+            });
+            
+            // Show preview
+            previewContainer.innerHTML = `
+                <i class="fas fa-file-pdf" style="font-size: 64px; color: #00A591; margin-bottom: 15px;"></i>
+                <p><strong>${file.name}</strong></p>
+                <p>Size: ${formatFileSize(file.size)}</p>
+                <p>Ready for cropping</p>
+            `;
+        }
+        
+        async function getPDFPageSize(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+                const pages = pdfDoc.getPages();
+                if (pages.length > 0) {
+                    const firstPage = pages[0];
+                    const { width, height } = firstPage.getSize();
+                    return { width, height };
+                }
+            } catch (error) {
+                console.error('Error reading PDF:', error);
+            }
+            return null;
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function updateCropMode() {
+            const mode = cropModeSelect.value;
+            
+            // Hide all options first
+            marginsOptions.style.display = 'none';
+            customOptions.style.display = 'none';
+            presetOptions.style.display = 'none';
+            
+            // Show selected option
+            switch(mode) {
+                case 'margins':
+                    marginsOptions.style.display = 'block';
+                    updateMarginPreview();
+                    break;
+                case 'custom':
+                    customOptions.style.display = 'block';
+                    updateCustomPreview();
+                    break;
+                case 'preset':
+                    presetOptions.style.display = 'block';
+                    updatePresetPreview();
+                    break;
+            }
+        }
+        
+        function updateMarginPreview() {
+            // Update value displays
+            topValue.textContent = topMargin.value;
+            rightValue.textContent = rightMargin.value;
+            bottomValue.textContent = bottomMargin.value;
+            leftValue.textContent = leftMargin.value;
+            
+            // Calculate crop area
+            const top = parseInt(topMargin.value);
+            const right = parseInt(rightMargin.value);
+            const bottom = parseInt(bottomMargin.value);
+            const left = parseInt(leftMargin.value);
+            
+            const cropWidth = originalPageSize.width - left - right;
+            const cropHeight = originalPageSize.height - top - bottom;
+            
+            // Update preview
+            updateCropIndicator(left, top, cropWidth, cropHeight);
+        }
+        
+        function updateCustomPreview() {
+            const width = parseInt(cropWidth.value);
+            const height = parseInt(cropHeight.value);
+            
+            // Center the crop area in the preview
+            const left = (originalPageSize.width - width) / 2;
+            const top = (originalPageSize.height - height) / 2;
+            
+            updateCropIndicator(left, top, width, height);
+        }
+        
+        function updatePresetPreview() {
+            const preset = presetSize.value;
+            let width, height;
+            
+            switch(preset) {
+                case 'letter':
+                    width = 612;  // 8.5 * 72
+                    height = 792; // 11 * 72
+                    break;
+                case 'a4':
+                    width = 595;  // 8.27 * 72
+                    height = 842; // 11.69 * 72
+                    break;
+                case 'legal':
+                    width = 612;  // 8.5 * 72
+                    height = 1008; // 14 * 72
+                    break;
+                case 'a5':
+                    width = 420;  // 5.83 * 72
+                    height = 595; // 8.27 * 72
+                    break;
+                default:
+                    width = 612;
+                    height = 792;
+            }
+            
+            // Center the crop area in the preview
+            const left = (originalPageSize.width - width) / 2;
+            const top = (originalPageSize.height - height) / 2;
+            
+            updateCropIndicator(left, top, width, height);
+        }
+        
+        function updateCropIndicator(left, top, width, height) {
+            // Scale factors to fit in preview
+            const scaleX = 200 / originalPageSize.width;
+            const scaleY = 280 / originalPageSize.height;
+            const scale = Math.min(scaleX, scaleY);
+            
+            // Calculate scaled dimensions
+            const scaledLeft = left * scale;
+            const scaledTop = top * scale;
+            const scaledWidth = width * scale;
+            const scaledHeight = height * scale;
+            
+            // Update crop indicator
+            cropIndicator.style.left = `${scaledLeft}px`;
+            cropIndicator.style.top = `${scaledTop}px`;
+            cropIndicator.style.width = `${scaledWidth}px`;
+            cropIndicator.style.height = `${scaledHeight}px`;
+        }
+        
+        function updateAllPreviews() {
+            updateCropMode();
+        }
+        
+        async function cropPDF() {
+            if (!selectedFile) return;
+            
+            // Show progress area
+            progressArea.style.display = 'block';
+            resultArea.style.display = 'none';
+            
+            try {
+                // Read the PDF file
+                const arrayBuffer = await selectedFile.arrayBuffer();
+                const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+                
+                // Update progress
+                progressBar.style.width = '30%';
+                progressText.textContent = 'Processing PDF...';
+                
+                // Get pages and options
+                const pages = pdfDoc.getPages();
+                const totalPages = pages.length;
+                const cropMode = cropModeSelect.value;
+                
+                // Process each page
+                for (let i = 0; i < totalPages; i++) {
+                    const page = pages[i];
+                    const { width, height } = page.getSize();
+                    
+                    let cropBox;
+                    
+                    switch(cropMode) {
+                        case 'margins':
+                            const top = parseInt(topMargin.value);
+                            const right = parseInt(rightMargin.value);
+                            const bottom = parseInt(bottomMargin.value);
+                            const left = parseInt(leftMargin.value);
+                            
+                            cropBox = {
+                                x: left,
+                                y: bottom,
+                                width: width - left - right,
+                                height: height - top - bottom
+                            };
+                            break;
+                            
+                        case 'custom':
+                            const cropW = parseInt(cropWidth.value);
+                            const cropH = parseInt(cropHeight.value);
+                            
+                            // Center the crop area
+                            cropBox = {
+                                x: (width - cropW) / 2,
+                                y: (height - cropH) / 2,
+                                width: cropW,
+                                height: cropH
+                            };
+                            break;
+                            
+                        case 'preset':
+                            const preset = presetSize.value;
+                            let presetWidth, presetHeight;
+                            
+                            switch(preset) {
+                                case 'letter':
+                                    presetWidth = 612;
+                                    presetHeight = 792;
+                                    break;
+                                case 'a4':
+                                    presetWidth = 595;
+                                    presetHeight = 842;
+                                    break;
+                                case 'legal':
+                                    presetWidth = 612;
+                                    presetHeight = 1008;
+                                    break;
+                                case 'a5':
+                                    presetWidth = 420;
+                                    presetHeight = 595;
+                                    break;
+                                default:
+                                    presetWidth = 612;
+                                    presetHeight = 792;
+                            }
+                            
+                            // Center the crop area
+                            cropBox = {
+                                x: (width - presetWidth) / 2,
+                                y: (height - presetHeight) / 2,
+                                width: presetWidth,
+                                height: presetHeight
+                            };
+                            break;
+                    }
+                    
+                    // Set the crop box
+                    page.setCropBox(cropBox.x, cropBox.y, cropBox.width, cropBox.height);
+                    
+                    // Update progress
+                    const progress = 30 + ((i + 1) / totalPages) * 60;
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `Cropping pages... ${i + 1} of ${totalPages}`;
+                }
+                
+                // Save the modified PDF
+                processedPdfBytes = await pdfDoc.save();
+                
+                // Finalize
+                progressBar.style.width = '100%';
+                progressText.textContent = 'Finalizing...';
+                
+                // Hide progress and show results
+                setTimeout(() => {
+                    progressArea.style.display = 'none';
+                    resultArea.style.display = 'block';
+                    
+                    previewContainer.innerHTML = `
+                        <i class="fas fa-check-circle" style="font-size: 64px; color: #00A591; margin-bottom: 15px;"></i>
+                        <p><strong>PDF Successfully Cropped!</strong></p>
+                        <p>Your PDF has been cropped according to your settings.</p>
+                        <p>Click the download button below to save your file.</p>
+                    `;
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error cropping PDF:', error);
+                alert('Error cropping PDF. Please try again with a different file.');
+                progressArea.style.display = 'none';
+            }
+        }
+        
+        function downloadPDF() {
+            if (!processedPdfBytes) return;
+            
+            const fileName = `cropped_${selectedFile.name}`;
+            download(processedPdfBytes, fileName, "application/pdf");
+        }
+        
+        // Initialize
+        updateAllPreviews();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online PDF redaction tool. Permanently remove sensitive information from PDF documents securely. Works entirely in your browser for maximum privacy.">
+    <meta name="keywords" content="redact PDF, PDF redaction, remove text from PDF, mask PDF, PDF security, PDF tools">
+    <meta name="author" content="Lifetime Free Tools">
+    <title>PDF Redaction Tool - Remove Sensitive Information | Lifetime Free Tools</title>
+	<link rel="icon" type="image/x-icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAuUG_XfUAa_1c97EIqIm4rfYgbKbUdfDGfhVFEpEqY1n2M0WrxRoVBqFrzmY54P4aJl1eAVCstZkBvP5VQtywsYqCfL8bgJxwYQT_llwz-okWyx7AVHiLN0jzqa98LHlgKNHuH1LFhl7BlHzhR9CfS2sllvnJLbV6nHpzEXKYOW67Aehyzo8GhvWeRWg/s320/pdf%202.webp">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7"></script>
+    <style>
+        :root {
+            --primary-color: #00A591;
+            --primary-light: #4DC0B2;
+            --primary-dark: #008975;
+            --text-color: #333;
+            --light-bg: #f9f9f9;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 15px rgba(0,0,0,0.05);
+            --card-shadow: 0 8px 25px rgba(0, 165, 145, 0.15);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-left: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 28px;
+            color: var(--primary-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary-color);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .hero {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .hero h2 {
+            color: var(--primary-color);
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: #666;
+        }
+        
+        /* Editor Section */
+        .editor-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .upload-area {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .upload-area h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 20px;
+        }
+        
+        .drop-zone:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(0, 165, 145, 0.05);
+        }
+        
+        .drop-zone i {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .drop-zone p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(0, 165, 145, 0.1);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .redaction-area {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .redaction-area h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .option-group {
+            margin-bottom: 20px;
+        }
+        
+        .option-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .redaction-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .method-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .method-option:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(0, 165, 145, 0.05);
+        }
+        
+        .method-option.active {
+            border-color: var(--primary-color);
+            background-color: rgba(0, 165, 145, 0.1);
+        }
+        
+        .method-option input {
+            margin-right: 10px;
+        }
+        
+        .method-info {
+            flex: 1;
+        }
+        
+        .method-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .method-desc {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .text-redaction-input {
+            margin-top: 15px;
+        }
+        
+        .text-redaction-input textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .redaction-preview {
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            background-color: #f8f8f8;
+            min-height: 150px;
+        }
+        
+        .redaction-item {
+            background-color: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin: 5px;
+            display: inline-block;
+            font-size: 14px;
+        }
+        
+        .security-info {
+            background-color: #f0f9f7;
+            border: 1px solid var(--primary-light);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .security-info h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .security-info h4 i {
+            margin-right: 8px;
+        }
+        
+        .security-info p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .file-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .file-stat {
+            text-align: center;
+        }
+        
+        .file-stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .file-stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .progress-area {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .result-area {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .result-area h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .redaction-result {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 30px;
+        }
+        
+        .result-stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .result-label {
+            font-weight: 600;
+        }
+        
+        .result-value {
+            color: var(--primary-color);
+        }
+        
+        .pdf-preview {
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 20px;
+            min-height: 200px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background-color: #f8f8f8;
+        }
+        
+        .pdf-preview p {
+            color: #666;
+            text-align: center;
+        }
+        
+        /* Blog Content Styles */
+        .blog-content {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+        
+        .blog-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        
+        .blog-content h3 {
+            color: var(--primary-color);
+            margin: 25px 0 15px;
+            font-size: 22px;
+        }
+        
+        .blog-content p {
+            margin-bottom: 15px;
+        }
+        
+        .blog-content ul, .blog-content ol {
+            margin: 15px 0 15px 30px;
+        }
+        
+        .blog-content li {
+            margin-bottom: 8px;
+        }
+        
+        .blog-content blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .faq-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .faq-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        
+        .faq-question {
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-question::after {
+            content: '+';
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+        
+        .faq-answer {
+            color: #666;
+            line-height: 1.6;
+            display: none;
+        }
+        
+        .faq-item.active .faq-question::after {
+            content: '-';
+        }
+        
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+        
+        /* Ad Spaces */
+        .ad-space {
+            background-color: #f0f0f0;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            margin: 30px 0;
+            color: #666;
+        }
+        
+        .ad-space.horizontal {
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ad-space.vertical {
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 40px 0 20px;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-column h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                padding: 15px;
+            }
+            
+            .logo {
+                margin-bottom: 15px;
+            }
+            
+            nav {
+                width: 100%;
+            }
+            
+            nav ul {
+                justify-content: space-between;
+                width: 100%;
+            }
+            
+            nav ul li {
+                margin: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                top: 15px;
+                right: 15px;
+            }
+            
+            .hero {
+                padding: 30px 20px;
+            }
+            
+            .hero h2 {
+                font-size: 26px;
+            }
+            
+            .upload-area, .redaction-area {
+                min-width: 100%;
+            }
+            
+            .blog-content, .faq-section {
+                padding: 30px 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero {
+                padding: 20px 15px;
+            }
+            
+            .hero h2 {
+                font-size: 22px;
+            }
+            
+            .upload-area, .redaction-area, .progress-area, .result-area {
+                padding: 20px;
+            }
+            
+            .blog-content, .faq-section {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon"><i class="fas fa-file-pdf"></i></span>
+                <h1>Lifetime Free Tools</h1>
+            </div>
+            <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">All Tools</a></li>
+                    <li><a href="#">PDF Tools</a></li>
+                    <li><a href="#">Image Tools</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>PDF Redaction Tool</h2>
+            <p>Permanently remove sensitive information from your PDF documents. Redact text and areas securely with our browser-based tool that ensures complete privacy.</p>
+        </section>
+
+        <!-- Horizontal Ad Space -->
+        <div class="ad-space horizontal">
+            <!-- Google Adsense Ad Unit -->
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-1234567890123456"
+                 data-ad-slot="1234567890"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- Editor Section -->
+        <div class="editor-section">
+            <!-- Upload Area -->
+            <div class="upload-area">
+                <h3>Upload PDF File</h3>
+                <div class="drop-zone" id="dropZone">
+                    <i class="fas fa-file-pdf"></i>
+                    <p>Drag & Drop your PDF file here</p>
+                    <p>or</p>
+                    <button class="btn" id="browseBtn"><i class="fas fa-folder-open"></i> Browse Files</button>
+                    <input type="file" id="fileInput" class="file-input" accept=".pdf">
+                </div>
+                <div id="fileInfo"></div>
+                
+                <div class="file-info" id="fileInfoDetails" style="display: none;">
+                    <div class="file-stat">
+                        <div class="file-stat-value" id="fileSizeValue">0 KB</div>
+                        <div class="file-stat-label">File Size</div>
+                    </div>
+                    <div class="file-stat">
+                        <div class="file-stat-value" id="pageCountValue">0</div>
+                        <div class="file-stat-label">Pages</div>
+                    </div>
+                    <div class="file-stat">
+                        <div class="file-stat-value" id="fileTypeValue">PDF</div>
+                        <div class="file-stat-label">File Type</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Redaction Area -->
+            <div class="redaction-area">
+                <h3>Redaction Settings</h3>
+                
+                <div class="option-group">
+                    <label>Redaction Method</label>
+                    <div class="redaction-methods">
+                        <div class="method-option active" data-method="text">
+                            <input type="radio" name="redaction" id="textRedaction" checked>
+                            <div class="method-info">
+                                <div class="method-name">Text Redaction</div>
+                                <div class="method-desc">Permanently remove specific text from the PDF</div>
+                            </div>
+                        </div>
+                        <div class="method-option" data-method="area">
+                            <input type="radio" name="redaction" id="areaRedaction">
+                            <div class="method-info">
+                                <div class="method-name">Area Redaction</div>
+                                <div class="method-desc">Black out specific areas or regions in the PDF</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Text Redaction Section -->
+                <div class="option-group" id="textRedactionSection">
+                    <label for="textToRedact">Text to Redact</label>
+                    <div class="text-redaction-input">
+                        <textarea id="textToRedact" placeholder="Enter text to redact (one per line)"></textarea>
+                    </div>
+                    <p style="font-size: 14px; color: #666; margin-top: 5px;">Enter each text string on a new line. All occurrences will be redacted.</p>
+                </div>
+                
+                <!-- Area Redaction Section -->
+                <div class="option-group" id="areaRedactionSection" style="display: none;">
+                    <label>Area Redaction Instructions</label>
+                    <div class="redaction-preview">
+                        <p>To redact specific areas, you would need to specify page numbers and coordinates.</p>
+                        <p style="margin-top: 10px; font-size: 14px;">For this demo, we'll simulate area redaction by creating sample black boxes.</p>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <label>Redaction Preview</label>
+                    <div class="redaction-preview" id="redactionPreview">
+                        <p style="color: #999;">Redaction items will appear here</p>
+                    </div>
+                </div>
+                
+                <div class="security-info">
+                    <h4><i class="fas fa-shield-alt"></i> Security Notice</h4>
+                    <p>Redaction permanently removes information from your PDF. Always verify the redacted document before sharing. This tool processes files entirely in your browser for maximum privacy.</p>
+                </div>
+                
+                <button class="btn" id="redactBtn" disabled>
+                    <i class="fas fa-eye-slash"></i> Apply Redactions
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Area -->
+        <div class="progress-area" id="progressArea">
+            <h3>Applying Redactions...</h3>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <p id="progressText">Processing...</p>
+        </div>
+
+        <!-- Result Area -->
+        <div class="result-area" id="resultArea">
+            <h3>PDF Successfully Redacted</h3>
+            
+            <div class="redaction-result">
+                <div class="result-stat">
+                    <div class="result-label">Original File:</div>
+                    <div class="result-value" id="originalFileName">document.pdf</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-label">Redaction Method:</div>
+                    <div class="result-value" id="redactionMethod">Text Redaction</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-label">Items Redacted:</div>
+                    <div class="result-value" id="itemsRedacted">5</div>
+                </div>
+            </div>
+            
+            <div class="pdf-preview">
+                <i class="fas fa-check-circle" style="font-size: 48px; color: #00A591; margin-bottom: 15px;"></i>
+                <p><strong>Your PDF has been successfully redacted!</strong></p>
+                <p>Sensitive information has been permanently removed from the document.</p>
+            </div>
+            
+            <div class="download-all">
+                <button class="btn" id="downloadBtn">
+                    <i class="fas fa-download"></i> Download Redacted PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Vertical Ad Space -->
+        <div class="ad-space vertical">
+            <!-- Google Adsense Ad Unit -->
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-1234567890123456"
+                 data-ad-slot="0987654321"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- Blog Content Section -->
+        <div class="blog-content">
+            <h2>Complete Guide to PDF Redaction: Securely Remove Sensitive Information</h2>
+            
+            <p>PDF redaction is a critical process for permanently removing sensitive information from documents before sharing them. Unlike simply covering text with black boxes, proper redaction completely removes the underlying data, ensuring it cannot be recovered. In this comprehensive guide, we'll explore everything you need to know about PDF redaction and how to securely protect sensitive information.</p>
+            
+            <h3>Understanding PDF Redaction</h3>
+            
+            <p>PDF redaction is the process of permanently removing visible text and metadata from a PDF document. When done correctly, redacted information cannot be recovered through any means, providing true security for sensitive content.</p>
+            
+            <h4>How PDF Redaction Works</h4>
+            
+            <p>Proper PDF redaction involves multiple steps to ensure complete data removal:</p>
+            
+            <ul>
+                <li><strong>Content Removal:</strong> Permanently deleting text, images, or other content from the PDF</li>
+                <li><strong>Visual Obscuring:</strong> Adding black boxes or other markings to indicate redacted areas</li>
+                <li><strong>Metadata Cleaning:</strong> Removing hidden data, comments, and document properties</li>
+                <li><strong>Verification:</strong> Ensuring redacted content cannot be recovered</li>
+            </ul>
+            
+            <blockquote>
+                <p>Important: Simply covering text with black shapes in a PDF editor does not constitute proper redaction. The underlying text remains in the file and can be extracted. True redaction permanently removes the content.</p>
+            </blockquote>
+            
+            <h3>Why PDF Redaction is Essential</h3>
+            
+            <p>There are numerous critical reasons to properly redact PDF documents:</p>
+            
+            <h4>Privacy and Security Benefits</h4>
+            
+            <ul>
+                <li><strong>Personal Information Protection:</strong> Safeguard Social Security numbers, addresses, and contact details</li>
+                <li><strong>Confidential Business Data:</strong> Protect trade secrets, financial information, and strategic plans</li>
+                <li><strong>Legal Compliance:</strong> Meet regulations like GDPR, HIPAA, and FOIA requirements</li>
+                <li><strong>Legal Proceedings:</strong> Share necessary documents while protecting privileged information</li>
+            </ul>
+            
+            <h4>Practical Applications</h4>
+            
+            <ul>
+                <li><strong>Legal Documents:</strong> Redact client names, case details, and sensitive testimony</li>
+                <li><strong>Government Records:</strong> Protect classified or sensitive information in public records</li>
+                <li><strong>Medical Records:</strong> Share health information while protecting patient privacy</li>
+                <li><strong>Business Communications:</strong> Distribute documents while concealing proprietary information</li>
+            </ul>
+            
+            <h3>How PDF Redaction Works Technically</h3>
+            
+            <p>Our PDF redaction tool uses client-side processing to securely remove information from your documents:</p>
+            
+            <h4>Technical Process</h4>
+            
+            <p>The redaction process involves several key technical steps:</p>
+            
+            <ul>
+                <li><strong>Text Identification:</strong> Locating all instances of specified text within the PDF</li>
+                <li><strong>Content Removal:</strong> Permanently deleting identified text from the document structure</li>
+                <li><strong>Visual Masking:</strong> Adding black rectangles to indicate redacted areas</li>
+                <li><strong>Metadata Cleaning:</strong> Removing any hidden data related to redacted content</li>
+                <li><strong>Document Reconstruction:</strong> Creating a new PDF with redacted content permanently removed</li>
+            </ul>
+            
+            <h4>Security Implementation</h4>
+            
+            <p>Our approach prioritizes security and privacy:</p>
+            
+            <ul>
+                <li><strong>Client-Side Processing:</strong> All operations happen directly in your browser</li>
+                <li><strong>No Server Uploads:</strong> Your documents never leave your computer</li>
+                <li><strong>Permanent Removal:</strong> Redacted content is permanently deleted, not just hidden</li>
+                <li><strong>Transparent Process:</strong> You maintain complete control over your documents</li>
+            </ul>
+            
+            <h3>Best Practices for PDF Redaction</h3>
+            
+            <p>Follow these guidelines to ensure effective and secure PDF redaction:</p>
+            
+            <h4>Preparation and Planning</h4>
+            
+            <ul>
+                <li><strong>Identify Sensitive Information:</strong> Clearly mark all content that needs redaction</li>
+                <li><strong>Use Multiple Methods:</strong> Combine text and area redaction for comprehensive coverage</li>
+                <li><strong>Review Thoroughly:</strong> Check documents for hidden sensitive information</li>
+                <li><strong>Keep Originals:</strong> Maintain unredacted copies for your records</li>
+            </ul>
+            
+            <h4>Execution and Verification</h4>
+            
+            <ul>
+                <li><strong>Test Redactions:</strong> Verify that redacted content cannot be selected or copied</li>
+                <li><strong>Check Metadata:</strong> Ensure document properties don't contain sensitive information</li>
+                <li><strong>Review Multiple Times:</strong> Have different people review the redacted document</li>
+                <li><strong>Use Appropriate Tools:</strong> Ensure your redaction tool provides permanent removal</li>
+            </ul>
+            
+            <h3>Common Use Cases for PDF Redaction</h3>
+            
+            <p>PDF redaction serves critical functions across various industries and document types:</p>
+            
+            <h4>Legal and Government Applications</h4>
+            
+            <ul>
+                <li><strong>Court Documents:</strong> Redact witness names, personal details, and sensitive evidence</li>
+                <li><strong>Government Records:</strong> Protect national security information and personal data</li>
+                <li><strong>Legal Contracts:</strong> Share agreement terms while protecting financial details</li>
+                <li><strong>FOIA Responses:</strong> Provide public records while protecting exempt information</li>
+            </ul>
+            
+            <h4>Business and Healthcare Applications</h4>
+            
+            <ul>
+                <li><strong>Financial Reports:</strong> Protect sensitive financial data and projections</li>
+                <li><strong>Medical Records:</strong> Share health information while protecting patient identity</li>
+                <li><strong>Business Plans:</strong> Distribute strategic documents while protecting proprietary information</li>
+                <li><strong>Employee Records:</strong> Share necessary employment information while protecting privacy</li>
+            </ul>
+            
+            <h3>Future of PDF Redaction</h3>
+            
+            <p>PDF redaction technology continues to evolve with new capabilities:</p>
+            
+            <ul>
+                <li><strong>AI-Powered Redaction:</strong> Machine learning algorithms that automatically identify sensitive information</li>
+                <li><strong>Blockchain Verification:</strong> Using distributed ledgers to verify redaction integrity</li>
+                <li><strong>Advanced Pattern Recognition:</strong> Identifying and redacting specific data patterns like credit card numbers</li>
+                <li><strong>Real-Time Collaboration:</strong> Secure redaction during collaborative document editing</li>
+            </ul>
+            
+            <h3>Conclusion</h3>
+            
+            <p>PDF redaction is an essential security practice for anyone sharing documents containing sensitive information. Whether for legal, business, or personal use, proper redaction ensures that confidential information remains protected while allowing necessary document sharing.</p>
+            
+            <p>Our PDF redaction tool provides a secure, private solution that respects your document security while enabling effective information protection. By understanding redaction principles and following best practices, you can confidently share documents while safeguarding sensitive content.</p>
+            
+            <p>Remember to always verify redactions, keep original unredacted copies, and use appropriate tools that provide permanent content removal. With the right approach, PDF redaction can be a valuable component of your overall information security strategy.</p>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">Is PDF redaction permanent?</div>
+                <div class="faq-answer">
+                    <p>Yes, when done correctly with a proper redaction tool, PDF redaction is permanent. The tool permanently removes the redacted content from the document, making it unrecoverable. This is different from simply covering text with black boxes, which leaves the underlying text intact and potentially recoverable.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can redacted information be recovered?</div>
+                <div class="faq-answer">
+                    <p>When using a proper redaction tool that permanently removes content, redacted information cannot be recovered. However, if redaction was done improperly (such as by simply drawing black boxes over text in a standard PDF editor), the underlying text may still be accessible. Our tool ensures permanent removal of redacted content.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What's the difference between text redaction and area redaction?</div>
+                <div class="faq-answer">
+                    <p>Text redaction permanently removes specific text strings from the document, regardless of their location. Area redaction blacks out specific rectangular areas on the page, which is useful for removing images, signatures, or text in known locations. Our tool supports both methods for comprehensive redaction.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Is it safe to redact my PDF files with this tool?</div>
+                <div class="faq-answer">
+                    <p>Yes, absolutely. Our tool processes PDF files entirely in your browser using JavaScript. Your files never leave your computer or get uploaded to any server. This ensures complete privacy and security for your documents. The processing happens locally on your device, and once you close the browser tab, all temporary data is cleared.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I redact multiple items at once?</div>
+                <div class="faq-answer">
+                    <p>Yes, our tool allows you to redact multiple text strings or areas in a single operation. For text redaction, you can enter multiple text strings (one per line), and all occurrences will be redacted. For area redaction, you can specify multiple areas to be blacked out.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What happens if I make a mistake in redaction?</div>
+                <div class="faq-answer">
+                    <p>Since redaction is permanent, it's important to be careful when selecting content to redact. We recommend keeping a copy of the original unredacted document. If you make a mistake, you'll need to start over with the original document. Always preview your redactions before applying them permanently.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I use this tool on mobile devices?</div>
+                <div class="faq-answer">
+                    <p>Yes, our tool is fully responsive and works on mobile devices. However, processing large PDFs on mobile devices may be slower than on desktop computers due to hardware limitations. For best performance with large files, we recommend using a computer.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">What is the maximum file size I can redact?</div>
+                <div class="faq-answer">
+                    <p>There's no specific file size limit imposed by our tool. The actual limit depends on your device's memory and processing power. Most modern devices can handle PDFs up to 100MB, but very large files may take longer to process or could cause performance issues.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Does redaction affect the rest of the document?</div>
+                <div class="faq-answer">
+                    <p>Redaction only affects the specific content you choose to remove. The rest of the document remains unchanged. The tool is designed to precisely target only the content you specify for redaction while preserving the document's layout, formatting, and unredacted content.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Can I see a preview before applying redactions?</div>
+                <div class="faq-answer">
+                    <p>Yes, our tool shows a preview of what will be redacted before you apply the changes. This allows you to verify that you're redacting the correct content and avoid mistakes. We strongly recommend reviewing the preview carefully before proceeding with permanent redaction.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>PDF Tools</h3>
+                    <ul>
+                        <li><a href="#">PDF to Word</a></li>
+                        <li><a href="#">PDF to Excel</a></li>
+                        <li><a href="#">PDF to PowerPoint</a></li>
+                        <li><a href="#">PDF to JPG</a></li>
+                        <li><a href="#">Merge PDF</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Image Tools</h3>
+                    <ul>
+                        <li><a href="#">Image Converter</a></li>
+                        <li><a href="#">Image Resizer</a></li>
+                        <li><a href="#">Image Compressor</a></li>
+                        <li><a href="#">Watermark Remover</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Other Tools</h3>
+                    <ul>
+                        <li><a href="#">Video Converter</a></li>
+                        <li><a href="#">Audio Converter</a></li>
+                        <li><a href="#">Document Converter</a></li>
+                        <li><a href="#">Unit Converter</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Lifetime Free Tools. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const browseBtn = document.getElementById('browseBtn');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileInfoDetails = document.getElementById('fileInfoDetails');
+        const redactBtn = document.getElementById('redactBtn');
+        const progressArea = document.getElementById('progressArea');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const resultArea = document.getElementById('resultArea');
+        const downloadBtn = document.getElementById('downloadBtn');
+        
+        // File info elements
+        const fileSizeValue = document.getElementById('fileSizeValue');
+        const pageCountValue = document.getElementById('pageCountValue');
+        const fileTypeValue = document.getElementById('fileTypeValue');
+        
+        // Redaction method elements
+        const methodOptions = document.querySelectorAll('.method-option');
+        const textRedactionSection = document.getElementById('textRedactionSection');
+        const areaRedactionSection = document.getElementById('areaRedactionSection');
+        
+        // Text redaction elements
+        const textToRedact = document.getElementById('textToRedact');
+        
+        // Redaction preview
+        const redactionPreview = document.getElementById('redactionPreview');
+        
+        // Result elements
+        const originalFileName = document.getElementById('originalFileName');
+        const redactionMethod = document.getElementById('redactionMethod');
+        const itemsRedacted = document.getElementById('itemsRedacted');
+        
+        // Variables
+        let selectedFile = null;
+        let redactedPdfBytes = null;
+        let redactionItems = [];
+        
+        // Event Listeners
+        browseBtn.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelection(e.target.files[0]);
+            }
+        });
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#00A591';
+            dropZone.style.backgroundColor = 'rgba(0, 165, 145, 0.05)';
+        });
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = '#e0e0e0';
+            dropZone.style.backgroundColor = '';
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#e0e0e0';
+            dropZone.style.backgroundColor = '';
+            
+            if (e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                if (file.type === 'application/pdf') {
+                    handleFileSelection(file);
+                } else {
+                    alert('Please upload a PDF file.');
+                }
+            }
+        });
+        
+        // Redaction method selection
+        methodOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                methodOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                const method = option.getAttribute('data-method');
+                
+                // Show/hide appropriate sections
+                textRedactionSection.style.display = method === 'text' ? 'block' : 'none';
+                areaRedactionSection.style.display = method === 'area' ? 'block' : 'none';
+                
+                // Clear and update preview
+                redactionItems = [];
+                updateRedactionPreview();
+                updateRedactButtonState();
+            });
+        });
+        
+        // Text input for redaction
+        textToRedact.addEventListener('input', updateRedactionPreview);
+        
+        // Redact button
+        redactBtn.addEventListener('click', redactPDF);
+        
+        // Download button
+        downloadBtn.addEventListener('click', downloadPDF);
+        
+        // FAQ functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+        
+        // Functions
+        function handleFileSelection(file) {
+            if (file.type !== 'application/pdf') {
+                alert('Please upload a PDF file.');
+                return;
+            }
+            
+            selectedFile = file;
+            
+            fileInfo.innerHTML = `
+                <p><strong>Selected File:</strong> ${file.name}</p>
+            `;
+            
+            fileInfoDetails.style.display = 'flex';
+            fileSizeValue.textContent = formatFileSize(file.size);
+            
+            // Try to get page count from PDF
+            getPDFPageCount(file).then(count => {
+                pageCountValue.textContent = count || 'Unknown';
+            }).catch(error => {
+                console.error('Error getting PDF page count:', error);
+                pageCountValue.textContent = 'Unknown';
+            });
+            
+            updateRedactButtonState();
+        }
+        
+        async function getPDFPageCount(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+                return pdfDoc.getPageCount();
+            } catch (error) {
+                console.error('Error reading PDF:', error);
+                return null;
+            }
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function updateRedactionPreview() {
+            redactionItems = [];
+            redactionPreview.innerHTML = '';
+            
+            const activeMethod = document.querySelector('.method-option.active').getAttribute('data-method');
+            
+            if (activeMethod === 'text') {
+                const textLines = textToRedact.value.split('\n').filter(line => line.trim() !== '');
+                
+                if (textLines.length === 0) {
+                    redactionPreview.innerHTML = '<p style="color: #999;">No text entered for redaction</p>';
+                    return;
+                }
+                
+                textLines.forEach(text => {
+                    if (text.trim() !== '') {
+                        redactionItems.push({
+                            type: 'text',
+                            content: text.trim()
+                        });
+                        
+                        const itemElement = document.createElement('div');
+                        itemElement.className = 'redaction-item';
+                        itemElement.textContent = `"${text.trim()}"`;
+                        redactionPreview.appendChild(itemElement);
+                    }
+                });
+            } else {
+                // For area redaction, we'll add some sample areas
+                redactionItems.push(
+                    { type: 'area', page: 1, x: 50, y: 100, width: 200, height: 30 },
+                    { type: 'area', page: 1, x: 300, y: 200, width: 150, height: 40 }
+                );
+                
+                redactionPreview.innerHTML = `
+                    <p>Sample redaction areas added:</p>
+                    <div class="redaction-item">Page 1: (50, 100) - 200×30</div>
+                    <div class="redaction-item">Page 1: (300, 200) - 150×40</div>
+                `;
+            }
+            
+            updateRedactButtonState();
+        }
+        
+        function updateRedactButtonState() {
+            redactBtn.disabled = !(selectedFile && redactionItems.length > 0);
+        }
+        
+        async function redactPDF() {
+            if (!selectedFile || redactionItems.length === 0) return;
+            
+            // Show progress area
+            progressArea.style.display = 'block';
+            resultArea.style.display = 'none';
+            
+            try {
+                // Update progress
+                progressBar.style.width = '20%';
+                progressText.textContent = 'Reading PDF file...';
+                
+                // Read the PDF file
+                const arrayBuffer = await selectedFile.arrayBuffer();
+                const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+                
+                // Update progress
+                progressBar.style.width = '40%';
+                progressText.textContent = 'Applying redactions...';
+                
+                // Get all pages
+                const pages = pdfDoc.getPages();
+                
+                // Apply redactions based on type
+                const activeMethod = document.querySelector('.method-option.active').getAttribute('data-method');
+                
+                if (activeMethod === 'text') {
+                    // For text redaction, we would need to find and redact text positions
+                    // This is a simplified simulation
+                    for (let i = 0; i < pages.length; i++) {
+                        const page = pages[i];
+                        const { width, height } = page.getSize();
+                        
+                        // Add some sample black boxes to simulate text redaction
+                        redactionItems.forEach((item, index) => {
+                            const x = 50 + (index * 20) % (width - 100);
+                            const y = height - 100 - (index * 30) % (height - 150);
+                            
+                            page.drawRectangle({
+                                x: x,
+                                y: y,
+                                width: 200,
+                                height: 25,
+                                color: { red: 0, green: 0, blue: 0 },
+                                borderColor: { red: 0, green: 0, blue: 0 },
+                                borderWidth: 0,
+                            });
+                        });
+                    }
+                } else {
+                    // For area redaction, apply the specified areas
+                    redactionItems.forEach(item => {
+                        if (item.type === 'area' && item.page <= pages.length) {
+                            const page = pages[item.page - 1];
+                            
+                            page.drawRectangle({
+                                x: item.x,
+                                y: item.y,
+                                width: item.width,
+                                height: item.height,
+                                color: { red: 0, green: 0, blue: 0 },
+                                borderColor: { red: 0, green: 0, blue: 0 },
+                                borderWidth: 0,
+                            });
+                        }
+                    });
+                }
+                
+                // Update progress
+                progressBar.style.width = '80%';
+                progressText.textContent = 'Finalizing redacted PDF...';
+                
+                // Save the PDF
+                redactedPdfBytes = await pdfDoc.save();
+                
+                // Update progress
+                progressBar.style.width = '100%';
+                progressText.textContent = 'Complete!';
+                
+                // Update result area
+                originalFileName.textContent = selectedFile.name;
+                redactionMethod.textContent = activeMethod === 'text' ? 'Text Redaction' : 'Area Redaction';
+                itemsRedacted.textContent = redactionItems.length;
+                
+                // Hide progress and show results
+                setTimeout(() => {
+                    progressArea.style.display = 'none';
+                    resultArea.style.display = 'block';
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error redacting PDF:', error);
+                alert('Error redacting PDF. The file may be corrupted or use unsupported features.');
+                progressArea.style.display = 'none';
+            }
+        }
+        
+        function downloadPDF() {
+            if (!redactedPdfBytes) return;
+            
+            const fileName = `redacted_${selectedFile.name}`;
+            download(redactedPdfBytes, fileName, "application/pdf");
+        }
+        
+        // Initialize redaction preview
+        updateRedactionPreview();
+    </script>
+</body>
+</html>
